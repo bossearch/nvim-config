@@ -3,7 +3,7 @@ local opt = { noremap = true, silent = true }
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-set('n', '<leader>r', function()
+set("n", "<leader>r", function()
     if vim.bo.modified then
         vim.cmd("update")
     end
@@ -16,15 +16,15 @@ set('n', '<leader>r', function()
     vim.notify("Config Reloaded!", vim.log.levels.INFO, { title = "Neovim" })
 end, opt)
 
-set('n', '<S-h>', ':bprev<CR>', opt)
-set('n', '<S-l>', ':bnext<CR>', opt)
+set("n", "<S-h>", ":bprev<CR>", opt)
+set("n", "<S-l>", ":bnext<CR>", opt)
 
-set({ 'n', 'v', 'x' }, '<leader>d', '"+d', opt)
-set({ 'n', 'v', 'x' }, '<leader>y', '"+y', opt)
-set({ 'n', 'v', 'x' }, '<leader>p', '"+p', opt)
+set({ "n", "v", "x" }, "<leader>d", "\"+d", opt)
+set({ "n", "v", "x" }, "<leader>y", "\"+y", opt)
+set({ "n", "v", "x" }, "<leader>p", "\"+p", opt)
 
-set('n', '-', ':Oil<CR>', opt)
-set('n', '<leader>f', ':Pick files<CR>', opt)
-set('n', '<leader>h', ':Pick help<CR>', opt)
+set("n", "-", ":Oil<CR>", opt)
+set("n", "<leader>f", ":Pick files<CR>", opt)
+set("n", "<leader>h", ":Pick help<CR>", opt)
 
-set('n', '<leader>mp', vim.lsp.buf.format, opt)
+set("n", "<leader>mp", vim.lsp.buf.format, opt)
