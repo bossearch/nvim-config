@@ -24,7 +24,7 @@ opt.relativenumber = true
 opt.scrolloff = 32
 opt.shiftround = true
 opt.shiftwidth = 4
-opt.shortmess:append 'c'
+opt.shortmess = opt.shortmess + "Ic"
 opt.showmode = false
 opt.sidescrolloff = 40
 opt.signcolumn = "yes"
