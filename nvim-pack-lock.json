@@ -1,12 +1,12 @@
 {
   "plugins": {
+    "lz.n": {
+      "rev": "dc811ca59a33753828c2676bd12d56de5ccb18a5",
+      "src": "https://github.com/lumen-oss/lz.n"
+    },
     "mini.pick": {
       "rev": "0b3599e6df730f3ced3359d33c674288de0d186d",
       "src": "https://github.com/echasnovski/mini.pick"
-    },
-    "neovim": {
-      "rev": "ff483051a47e27d84bdef47703538df1ed9f4a47",
-      "src": "https://github.com/rose-pine/neovim"
     },
     "nvim-lspconfig": {
       "rev": "a683e0ddf0cf64c6cd689e18ffb480ade3c162b7",
@@ -16,13 +16,9 @@
       "rev": "b73018b75affd13fa38e2fc94ef753b465f770d7",
       "src": "https://github.com/stevearc/oil.nvim"
     },
-    "tokyonight.nvim": {
-      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
-      "src": "https://github.com/folke/tokyonight.nvim"
-    },
-    "vague.nvim": {
-      "rev": "49fe06ad33d8847b931ba4279197bda222374cd1",
-      "src": "https://github.com/vague2k/vague.nvim"
+    "rose-pine": {
+      "rev": "ff483051a47e27d84bdef47703538df1ed9f4a47",
+      "src": "https://github.com/rose-pine/neovim"
     },
     "vim-startuptime": {
       "rev": "5f33e50f1e2e2a80370c9094e4c303ea54cd2aea",
