@@ -1,5 +1,8 @@
 vim.loader.enable()
 
+vim.cmd.packadd("nvim.undotree")
+vim.cmd.packadd("nvim.difftool")
+
 -- load module from lua
 local target_dirs = { "plugins", "core" }
 local config_dir = vim.fn.stdpath("config")
