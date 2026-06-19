@@ -17,6 +17,8 @@ for _, dir_name in ipairs(extra_dirs) do
 	end
 end
 
+require("lib.util").get_nvim_startup_time()
+
 vim.pack.add({ "https://github.com/lumen-oss/lz.n" }, { confirm = false })
 
 local lz_table = {}

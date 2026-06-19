@@ -1,8 +1,6 @@
 return {
-    spec = {
-        src = "https://github.com/folke/snacks.nvim",
-    },
     "snacks.nvim",
+    spec = { src = "https://github.com/folke/snacks.nvim" },
     event = "User startuptime-loaded",
     after = function()
         require("snacks").setup({
@@ -88,13 +86,13 @@ return {
                     },
                     { padding = 2, section = "keys" },
                     {
-                    	align = "center",
-                    	text = {
-                    		{ require("lib.util").get_tips(), hl = "header" },
-                    		{ "\n\n  ", hl = "desc" },
-                    		{ "Neovim loaded in ", hl = "footer" },
-                    		{ require("lib.util").get_nvim_startup_time(), hl = "key" },
-                    	},
+                        align = "center",
+                        text = {
+                            { require("lib.util").get_tips(), hl = "header" },
+                            { "\n\n  ", hl = "desc" },
+                            { "Neovim loaded in ", hl = "footer" },
+                            { require('lib.util')._startup_time, hl = "key" }
+                        },
                     },
                 },
             },
