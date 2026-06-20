@@ -37,3 +37,25 @@ autocmd("BufWritePre", {
         vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
     end,
 })
+
+-- Remove annoying auto add comment
+autocmd({ "FileType", "BufEnter" }, {
+    callback = function()
+        vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+    end,
+})
+
+-- But im not annoyed for this ft
+autocmd("FileType", {
+    pattern = { "markdown", "gitcommit" },
+    callback = function()
+        vim.opt_local.formatoptions:append({ "c", "r", "o" })
+    end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+    pattern = "startuptime-loaded",
+    callback = function()
+        vim.cmd("Alpha")
+    end
+})
