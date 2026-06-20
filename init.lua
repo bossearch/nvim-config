@@ -25,17 +25,31 @@ local lz_table = {}
 local pack_table = {}
 local plugins_dir = config_dir .. "/lua/plugins"
 
+local function add_spec(spec)
+    local deps = spec.dependencies
+    spec.dependencies = nil
+    if deps then
+        for _, dep in ipairs(deps) do
+            if type(dep) == "table" then
+                add_spec(dep)
+            else
+                table.insert(pack_table, dep)
+            end
+        end
+    end
+    table.insert(pack_table, spec)
+end
+
 for name, type in vim.fs.dir(plugins_dir) do
-	if type == "file" and name:match("%.lua$") then
-		local plugin = require("plugins." .. name:gsub("%.lua$", ""))
+    if type == "file" and name:match("%.lua$") and not name:match("^%.") then
+        local plugin = require("plugins." .. name:gsub("%.lua$", ""))
+        if plugin.spec then
+            add_spec(plugin.spec)
+            plugin.spec = nil
+        end
 
-		if plugin.spec then
-			table.insert(pack_table, plugin.spec)
-			plugin.spec = nil
-		end
-
-		table.insert(lz_table, plugin)
-	end
+        table.insert(lz_table, plugin)
+    end
 end
 
 vim.pack.add(pack_table, { confirm = false })
