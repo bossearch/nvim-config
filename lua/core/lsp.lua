@@ -1,1 +1,8 @@
-vim.lsp.enable({ "lua_ls" })
+vim.lsp.enable({ "lua_ls", "nixd" })
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("blink-cmp").get_lsp_capabilities(capabilities)
+
+vim.lsp.config("*", {
+	capabilities = capabilities,
+})
