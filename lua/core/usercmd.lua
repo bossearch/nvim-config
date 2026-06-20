@@ -2,7 +2,8 @@ local usercmd = vim.api.nvim_create_user_command
 
 usercmd("CopyAbsolutePath", function()
     local path = vim.fn.expand("%:p")
-require("lib.util").copy_to_clipboard(path) end, {})
+    require("lib.util").copy_to_clipboard(path)
+end, {})
 
 usercmd("CopyAbsolutePathWithLine", function()
     local path = vim.fn.expand("%:p")
@@ -23,7 +24,6 @@ usercmd("CopyRelativePathWithLine", function()
     require("lib.util").copy_to_clipboard(result)
 end, {})
 usercmd("CopyFileName", function()
-
     local path = vim.fn.expand("%:t")
     require("lib.util").copy_to_clipboard(path)
 end, {})
@@ -53,37 +53,26 @@ usercmd("RootDir", function()
 end, {})
 
 -- Custom packer commands
-usercmd("PackCheck", function()
-    local non_active = vim.iter(vim.pack.get())
-        :filter(function(x) return not x.active end)
-        :map(function(x) return x.spec.name end)
-        :totable()
-
+vim.api.nvim_create_user_command("PackCleanup", function()
+    local non_active = {}
+    for _, pack in ipairs(vim.pack.get()) do
+        if not pack.active then
+            table.insert(non_active, pack.spec.name)
+        end
+    end
     if #non_active == 0 then
-        vim.notify("🆗 No non-active plugins found!", vim.log.levels.INFO)
+        vim.notify("No non-active plugins found")
         return
     end
-
-    vim.print("😴 Non-active plugins :")
-    print(" ")
-    for _, name in ipairs(non_active) do
-        print(name)
-    end
-
-    print(" ")
-
-    local choice = vim.fn.confirm(
-        "Delete ALL non-active plugins from disk?",
-        "&Yes\n&No",
-        2 -- default = No
+    vim.notify(
+        "Non-active plugins:\n\n" .. table.concat(non_active, "\n"),
+        vim.log.levels.WARN
     )
-
-    if choice == 1 then
+    if vim.fn.confirm(
+            "Delete " .. #non_active .. " plugin(s)?",
+            "&Yes\n&No"
+        ) == 1 then
         vim.pack.del(non_active)
-        vim.notify("🗑️  Deleted " .. #non_active .. " non-active plugin(s)", vim.log.levels.INFO)
-        print("Non-active plugins deleted!")
-        vim.api.nvim_exec_autocmds("User", { pattern = "PackChanged" })
-    else
-        vim.notify("Cancelled. No plugins were deleted!", vim.log.levels.INFO)
+        vim.notify(" Deleted " .. #non_active .. " plugin(s)")
     end
-end, { desc = "List non active plugins and select to delete" })
+end, {})
