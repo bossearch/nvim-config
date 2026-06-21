@@ -38,6 +38,16 @@ autocmd("BufWritePre", {
     end,
 })
 
+-- Auto nohlsearch
+autocmd('CursorMoved', {
+    group = vim.api.nvim_create_augroup('auto-nohlsearch', { clear = true }),
+    callback = function()
+        if vim.v.hlsearch == 1 and vim.fn.searchcount().exact_match == 0 then
+            vim.schedule(function() vim.cmd("nohlsearch") end)
+        end
+    end
+})
+
 -- Remove annoying auto add comment
 autocmd({ "FileType", "BufEnter" }, {
     callback = function()
