@@ -51,7 +51,7 @@ autocmd('CursorMoved', {
 -- Remove annoying auto add comment
 autocmd({ "FileType", "BufEnter" }, {
     callback = function()
-        vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+        vim.opt_local.formatoptions:remove("cro")
     end,
 })
 
@@ -59,7 +59,7 @@ autocmd({ "FileType", "BufEnter" }, {
 autocmd("FileType", {
     pattern = { "markdown", "gitcommit" },
     callback = function()
-        vim.opt_local.formatoptions:append({ "c", "r", "o" })
+        vim.opt_local.formatoptions:append("cro")
     end,
 })
 
