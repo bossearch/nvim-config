@@ -2,11 +2,11 @@ local opt = vim.opt
 
 -- core
 opt.fileencoding = "utf-8" -- file encoding format
-opt.timeoutlen = 200       -- key sequence timeout (ms)
+opt.timeoutlen = 300       -- key sequence timeout (ms)
 opt.undofile = true        -- persistent undo enabled
 opt.updatetime = 100       -- swap/write trigger delay (ms)
 opt.writebackup = false    -- disable backup file creation
-opt.undodir = vim.fn.stdpath("data") .. "/undofile"
+opt.undodir = vim.fn.stdpath("state") .. "/undo"
 
 -- indenting
 opt.expandtab = true  -- use spaces instead of tabs
