@@ -17,6 +17,10 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "'v1'"
     },
+    "gitsigns.nvim": {
+      "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
     "lz.n": {
       "rev": "dc811ca59a33753828c2676bd12d56de5ccb18a5",
       "src": "https://github.com/lumen-oss/lz.n"
@@ -45,9 +49,5 @@
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
     },
-    "vim-startuptime": {
-      "rev": "5f33e50f1e2e2a80370c9094e4c303ea54cd2aea",
-      "src": "https://github.com/dstein64/vim-startuptime"
-    }
   }
 }
