@@ -17,10 +17,6 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "'v1'"
     },
-    "gitsigns.nvim": {
-      "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
-      "src": "https://github.com/lewis6991/gitsigns.nvim"
-    },
     "lz.n": {
       "rev": "dc811ca59a33753828c2676bd12d56de5ccb18a5",
       "src": "https://github.com/lumen-oss/lz.n"

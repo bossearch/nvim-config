@@ -63,6 +63,32 @@ return {
                 textobject = "gc",
             },
         })
+        require("mini.diff").setup({
+            view = {
+                style = "sign",
+                signs = { add = "+", change = "~", delete = "-" },
+                priority = 6,
+            },
+            source = nil,
+            delay = {
+                text_change = 200,
+            },
+            mappings = {
+                apply = "gh",
+                reset = "gH",
+                textobject = "gh",
+                goto_first = "",
+                goto_prev = "[h",
+                goto_next = "]h",
+                goto_last = "",
+            },
+            options = {
+                algorithm = "histogram",
+                indent_heuristic = true,
+                linematch = 60,
+                wrap_goto = false,
+            },
+        })
         require("mini.sessions").setup({
             autoread = false,
             autowrite = false,
@@ -85,6 +111,9 @@ return {
         })
         require("mini.splitjoin").setup({ mappings = { toggle = "Sj" } })
         require("mini.surround").setup()
+
+        vim.keymap.set("n", "<leader>gh", ":!git restore --staged %<CR>")
+        vim.keymap.set("n", "<leader>gd", ":lua MiniDiff.toggle_overlay(0)<CR>")
         vim.keymap.set({ "n", "v", "i" }, "<C-s>", function()
             require("mini.sessions").write("global-session")
         end, { noremap = true, silent = true })
