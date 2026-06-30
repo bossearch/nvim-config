@@ -51,7 +51,8 @@ end
 
 vim.pack.add(pack_table, { confirm = false })
 require("lz.n").load(lz_table)
--- print("=== pack_table ===")
--- print(vim.inspect(pack_table))
--- print("=== lz_table ===")
--- print(vim.inspect(lz_table))
+local f, err = io.open(vim.fn.stdpath("config") .. "/debug.lua", "w")
+assert(f, err)
+f:write("vim.pack.add(\n" .. vim.inspect(pack_table) .. "\n)")
+f:write("\n\nrequire('lz.n').load(\n" .. vim.inspect(lz_table) .. "\n)")
+f:close()
