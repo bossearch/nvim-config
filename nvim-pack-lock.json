@@ -25,9 +25,9 @@
       "rev": "dc811ca59a33753828c2676bd12d56de5ccb18a5",
       "src": "https://github.com/lumen-oss/lz.n"
     },
-    "mini.pick": {
-      "rev": "0b3599e6df730f3ced3359d33c674288de0d186d",
-      "src": "https://github.com/echasnovski/mini.pick"
+    "mini.nvim": {
+      "rev": "bf8169f3e518be8de3f88073ace37d91f576cb04",
+      "src": "https://github.com/echasnovski/mini.nvim"
     },
     "noice.nvim": {
       "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
