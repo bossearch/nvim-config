@@ -110,4 +110,11 @@ util.get_tips = function()
 	return wrap_text(tip, 60)
 end
 
+-- lualine
+util.get_cwd = function()
+    local cwd = vim.fn.getcwd()
+    local folder_name = vim.fn.fnamemodify(cwd, ":t")
+    return folder_name
+end
+
 return util
