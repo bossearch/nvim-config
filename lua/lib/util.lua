@@ -1,5 +1,36 @@
 local util = {}
 
+-- scan_modules --
+--- @param sub_dir string The directory path relative to the config root (e.g., "lua/core")
+--- @param require_prefix string The prefix string used for requiring (e.g., "core.")
+--- @param callback? function The logic to execute when a module is successfully found and loaded
+util.scan_modules = function(sub_dir, require_prefix, callback)
+    local config_dir = vim.fn.stdpath("config")
+    local full_path = config_dir .. "/" .. sub_dir
+    if vim.fn.isdirectory(full_path) ~= 1 then
+        return
+    end
+
+    for name, type in vim.fs.dir(full_path) do
+        if type == "file" and name:match("%.lua$") and not name:match("^%.") then
+            local base_name = name:gsub("%.lua$", "")
+            local module_path = require_prefix .. base_name
+            local success, module = pcall(require, module_path)
+            if success then
+                if callback then
+                    callback(module, base_name)
+                end
+            else
+                vim.notify(
+                    string.format("Failed to load module %s:\n%s", module_path, module),
+                    vim.log.levels.ERROR,
+                    { title = "Scan Modules" }
+                )
+            end
+        end
+    end
+end
+
 -- usercmd --
 util.copy_to_clipboard = function(content)
     vim.fn.setreg("+", content)

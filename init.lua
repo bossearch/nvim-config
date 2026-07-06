@@ -1,58 +1,38 @@
 vim.loader.enable()
 
-local extra_dirs = { "core", "lib" }
-local config_dir = vim.fn.stdpath("config")
-for _, dir_name in ipairs(extra_dirs) do
-    local full_path = config_dir .. "/lua/" .. dir_name
-    if vim.fn.isdirectory(full_path) == 1 then
-        for name, type in vim.fs.dir(full_path) do
-            if type == "file" and name:match("%.lua$") then
-                local module = dir_name .. "." .. name:gsub("%.lua$", "")
-                require(module)
-            end
-        end
-    end
-end
+local util = require("lib.util")
 
-require("lib.util").get_nvim_startup_time()
+util.scan_modules("lua/core", "core.")
 
 vim.pack.add({ "https://github.com/lumen-oss/lz.n" }, { confirm = false })
 
 local lz_table = {}
 local pack_table = {}
-local plugins_dir = config_dir .. "/lua/plugins"
 
-local function add_spec(spec)
-    local deps = spec.dependencies
-    spec.dependencies = nil
-    if deps then
-        for _, dep in ipairs(deps) do
-            if type(dep) == "table" then
-                add_spec(dep)
-            else
-                table.insert(pack_table, dep)
-            end
-        end
+local function process_plugin(plugin)
+    if plugin.spec then
+        table.insert(pack_table, plugin.spec)
+        plugin.spec = nil
     end
-    table.insert(pack_table, spec)
+    table.insert(lz_table, plugin)
 end
 
-for name, type in vim.fs.dir(plugins_dir) do
-    if type == "file" and name:match("%.lua$") and not name:match("^%.") then
-        local plugin = require("plugins." .. name:gsub("%.lua$", ""))
-        if plugin.spec then
-            add_spec(plugin.spec)
-            plugin.spec = nil
+util.scan_modules("lua/plugins", "plugins.", function(plugins)
+    if type(plugins[1]) == "table" then
+        for _, p in ipairs(plugins) do
+            process_plugin(p)
         end
-
-        table.insert(lz_table, plugin)
+    else
+        process_plugin(plugins)
     end
-end
+end)
 
+require("lib._alpha").get_startup_time()
 require("lz.n").load(lz_table)
 
+vim.pack.add(pack_table, { confirm = false })
 vim.api.nvim_create_user_command("PackInstall", function()
-    vim.pack.add(pack_table, { confirm = false })
+    -- vim.pack.add(pack_table, { confirm = false })
 end, {})
 
 vim.api.nvim_create_user_command("PackCleanup", function()
