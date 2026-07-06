@@ -65,10 +65,15 @@ autocmd("FileType", {
         end
     end,
 })
+
 autocmd("User", {
-    group = augroup("startuptime-loaded"),
-    pattern = "startuptime-loaded",
+    group = augroup("run_alpha"),
+    pattern = "startuptime_loaded",
     callback = function()
-        vim.cmd("Alpha")
+        vim.schedule(function()
+            if vim.fn.argc() == 0 and vim.bo.filetype ~= "man" then
+                vim.cmd("Alpha")
+            end
+        end)
     end,
 })

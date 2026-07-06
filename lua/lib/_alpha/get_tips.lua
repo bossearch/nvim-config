@@ -1,31 +1,22 @@
 -- credit to: https://github.com/rubiin/fortune.nvim
-return {
+-- TODO: make this at least 60 chars
+local tips = {
     "<number>G goes to the line with that number",
     "If text is wrapping use gk and gj to move up and down",
-    "Mapping caps-lock to escape is a common practice for vim users",
     "Use CTRL-A and CTRL-X to increment and decrement numbers",
     "Use `:%!xxd` to convert a file to hexadecimal",
     "Use `:Cfilter!` to clear the quickfix list filter",
     "Use `:Cfilter` to filter the quickfix list",
     "Use `:TOhtml` followed by a filename to save the HTML output to a file",
     "Use `:TOhtml` to convert the current buffer to HTML",
-    "Use `:bdelete` or `:bd` to delete a buffer",
-    "Use `:bnext` or `:bn` to switch to the next buffer",
-    "Use `:bprevious` or `:bp` to switch to the previous buffer",
-    "Use `:cd` followed by a directory path to change the current directory",
     "Use `:cdo` to execute a command on each error in the quickfix list",
-    "Use `:cfdo` to execute a command on each error in the quickfix list",
     "Use `:changes` to display a list of recent changes",
-    "Use `:checkhealth` to diagnose common issues with your Neovim setup",
-    "Use `:checktime` to check if the file has been modified outside of Neovim",
     "Use `:cnext` and `:cprev` to navigate through quickfix list items",
     "Use `:colder` and `:cnewer` to navigate through older and newer quickfix lists",
     "Use `:compiler` followed by a compiler name to set the compiler",
     "Use `:cw` to open the quickfix list window",
     "Use `:delmarks a b c` to delete marks a, b, and c",
     "Use `:e!` to reload the current file from disk, discarding changes",
-    "Use `:echo $VIMRUNTIME` to display the location of the Vim runtime directory",
-    "Use `:echo $VIM` to display the location of the Vim configuration directory",
     "Use `:echo &option` to display the current value of an option",
     "Use `:edit` or `:e` to open a file for editing",
     "Use `:g!` followed by a pattern and a command to execute the command on lines that don't match the pattern",
@@ -34,10 +25,8 @@ return {
     "Use `:g/pattern/d` to delete lines containing a specific pattern",
     "Use `:g` followed by a pattern and a command to execute the command on lines that match the pattern",
     "Use `:global` as an alias for `:g`",
-    "Use `:grep` followed by a search pattern and file pattern to search for text in files",
     "Use `:grep` to search for patterns in multiple files",
     "Use `:help g` to learn about the powerful uses of the g command",
-    "Use `:helpgrep` to search for help topics containing a specific keyword",
     "Use `:history` to display command-line history",
     "Use `:ju` or `:jumps` to display a list of jump locations",
     "Use `:lclose` to close the location list window",
@@ -53,30 +42,15 @@ return {
     "Use `:ls` to list all open buffers",
     "Use `:lvimgrep` to perform a search using the location list and the quickfix list",
     "Use `:make!` to force make command execution",
-    "Use `:make` followed by a command to run a program",
     "Use `:make` followed by a program name to compile a program",
-    "Use `:make` to run the make command and display errors in the quickfix list",
     "Use `:marks` to list all the current marks",
-    "Use `:noautocmd w` to write a file without triggering autocmd events",
-    "Use `:normal` followed by a sequence of keys to execute normal mode commands",
     "Use `:pwd` to display the current working directory",
-    "Use `:q!` to forcefully quit Neovim without saving changes",
-    "Use `:q` to quit Neovim",
     "Use `:r` followed by a filename to insert the contents of a file at the current cursor position",
     "Use `:read` followed by a shell command to insert the output of a command at the current cursor position",
-    "Use `:registers` followed by a register name to display the contents of a specific register",
+    "Use `:registers *`  display the contents of a specific register",
     "Use `:registers` to display the contents of all registers",
-    "Use `:resize +/-n` to adjust the height of the current split",
     "Use `:scriptnames` to display a list of sourced scripts",
-    "Use `:set list` to display whitespace characters in a buffer",
-    "Use `:set listchars` to configure the characters used to represent invisible characters",
-    "Use `:set number` to display line numbers",
-    "Use `:set option?` to display the current value of an option",
-    "Use `:set spell` to enable spell checking",
-    "Use `:setlocal spell` to enable spell checking for the current buffer",
-    "Use `:sort u` followed by a range to remove duplicate lines in the specified range",
     "Use `:sort u` to remove duplicate lines in a buffer",
-    "Use `:sort` followed by a range to sort lines in the specified range",
     "Use `:sort` to sort lines in a buffer",
     "Use `:source` followed by a file path to execute a Vimscript file",
     "Use `:sp filename` to open a file in a horizontal split",
@@ -86,10 +60,7 @@ return {
     "Use `:tabnew` to open a new tab",
     "Use `:tabnext` or `gt` to switch to the next tab",
     "Use `:tabprevious` or `gT` to switch to the previous tab",
-    "Use `:term` as an alias for `:terminal`",
-    "Use `:termedit` to open a terminal buffer with the contents of a file",
-    "Use `:termfind` to open a terminal buffer with the contents of a file and position the cursor at the first match of a pattern",
-    "Use `:terminal` to open a terminal window",
+    "Use `:term` or `:terminal` to open a terminal window",
     "Use `:verbose set option?` to find out where an option was last set",
     "Use `:vertical resize +/-n` to adjust the width of the current split",
     "Use `:vglobal` to execute a command on lines that don't match a pattern",
@@ -97,16 +68,39 @@ return {
     "Use `:vsp filename` to open a file in a vertical split",
     "Use `:vsp term://$SHELL` to open a terminal in a vertical split",
     "Use `:w !sudo tee %` to save a file that requires root permission",
-    "Use `:wq` to save changes and quit",
-    "Use `:write` or `:w` to save changes to a file",
     "Use `Ctrl-W h/j/k/l` to navigate between splits",
     "Use `Ctrl-W` followed by `C` to exit terminal mode",
     "Use `Ctrl-W` followed by `N` to switch to normal mode in terminal mode",
-    "You can use a vimscript function to replace text `%s/replace/\\=1+1`",
     "`:%s/./&/gn` counts characters in a buffer",
     "`:%s/^//n` counts lines in a buffer",
-    "q: opens the recent command history",
     "use `gv` to re-select the previous visual selection",
-    'Use "_ to yank into the black hole register',
-    'Use `ZZ` in normal mode to quit nvim'
+    "Use `ZZ` in normal mode to quit nvim",
 }
+
+local function get_tips()
+    math.randomseed(os.time())
+    math.random()
+
+    local tip = tips[math.random(1, #tips)]
+    local lines = {}
+    local current_line = ""
+
+    for word in tip:gmatch("%S+") do
+        if current_line == "" then
+            current_line = word
+        elseif #current_line + #word + 1 <= 60 then
+            current_line = current_line .. " " .. word
+        else
+            table.insert(lines, current_line)
+            current_line = word
+        end
+    end
+
+    if current_line ~= "" then
+        table.insert(lines, current_line)
+    end
+
+    return table.concat(lines, "\n")
+end
+
+return get_tips
