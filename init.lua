@@ -30,9 +30,8 @@ end)
 require("lib._alpha").get_startup_time()
 require("lz.n").load(lz_table)
 
-vim.pack.add(pack_table, { confirm = false })
 vim.api.nvim_create_user_command("PackInstall", function()
-    -- vim.pack.add(pack_table, { confirm = false })
+    vim.pack.add(pack_table, { confirm = false })
 end, {})
 
 vim.api.nvim_create_user_command("PackCleanup", function()
