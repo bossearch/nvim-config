@@ -1,0 +1,55 @@
+{
+  "contributes": {
+    "snippets": [
+    {
+      "language": "all",
+      "path": "./all.json"
+    }
+,
+    {
+      "language": "c",
+      "path": "./c.json"
+    }
+,
+    {
+      "language": "cmake",
+      "path": "./cmake.json"
+    }
+,
+    {
+      "language": "cpp",
+      "path": "./cpp.json"
+    }
+,
+    {
+      "language": "kotlin",
+      "path": "./kotlin.json"
+    }
+,
+    {
+      "language": "all",
+      "path": "./loremipsum.json"
+    }
+,
+    {
+      "language": "lua",
+      "path": "./lua.json"
+    }
+,
+    {
+      "language": "markdown",
+      "path": "./markdown.json"
+    }
+,
+    {
+      "language": "nix",
+      "path": "./nix.json"
+    }
+,
+    {
+      "language": ["sh", "zsh", "shell", "shellscript"],
+      "path": "./shell.json"
+    }
+]
+  }
+}

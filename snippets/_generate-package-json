@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SNIPPETS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUTPUT_FILE="$SNIPPETS_DIR/package.json"
+
+declare -A OVERRIDES
+OVERRIDES["shell.json"]='["sh", "zsh", "shell", "shellscript"]'
+OVERRIDES["loremipsum.json"]='"all"'
+OVERRIDES["all.json"]='"all"'
+
+TEMP_JSON=$(mktemp)
+echo "[" >"$TEMP_JSON"
+
+FIRST=true
+
+for file in "$SNIPPETS_DIR"/*.json; do
+  [ -e "$file" ] || continue
+  filename=$(basename "$file")
+  [ "$filename" = "package.json" ] && continue
+
+  if [[ -n "${OVERRIDES[$filename]-}" ]]; then
+    lang_entry="${OVERRIDES[$filename]}"
+  else
+    ft_fallback="${filename%.json}"
+    lang_entry="\"$ft_fallback\""
+  fi
+
+  if [ "$FIRST" = true ]; then
+    FIRST=false
+  else
+    echo "," >>"$TEMP_JSON"
+  fi
+
+  cat <<EOF >>"$TEMP_JSON"
+    {
+      "language": $lang_entry,
+      "path": "./$filename"
+    }
+EOF
+done
+
+echo "]" >>"$TEMP_JSON"
+
+cat <<EOF >"$OUTPUT_FILE"
+{
+  "contributes": {
+    "snippets": $(cat "$TEMP_JSON")
+  }
+}
+EOF
+
+rm "$TEMP_JSON"
+echo "$OUTPUT_FILE generated"
