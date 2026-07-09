@@ -82,7 +82,7 @@ return {
                     ["<S-Tab>"] = { "snippet_backward", "fallback" },
                     ["<Tab>"] = { "snippet_forward", "fallback" },
                 },
-                -- snippets = { preset = "luasnip" },
+                snippets = { preset = "default" },
                 sources = {
                     default = { "lsp", "snippets", "path", "ripgrep" },
                     providers = {
