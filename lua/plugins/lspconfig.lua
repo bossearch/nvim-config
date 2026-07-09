@@ -1,23 +1,21 @@
 return {
-    spec = { src = "https://github.com/neovim/nvim-lspconfig" },
     "nvim-lspconfig",
+    spec = { src = "https://github.com/neovim/nvim-lspconfig" },
     event = { "BufReadPre", "BufNewFile" },
     after = function()
         local group = vim.api.nvim_create_augroup("lsp", {})
         vim.api.nvim_create_autocmd("LspAttach", {
             callback = function(args)
-                vim.keymap.set('n', 'grn', vim.lsp.buf.rename)
-                vim.keymap.set({ 'n', 'v' }, 'gra', vim.lsp.buf.code_action)
-                vim.keymap.set('n', 'grD', vim.lsp.buf.declaration)
+                vim.keymap.set("n", "grn", vim.lsp.buf.rename)
+                vim.keymap.set({ "n", "v" }, "gra", vim.lsp.buf.code_action)
+                vim.keymap.set("n", "grD", vim.lsp.buf.declaration)
 
                 local client = vim.lsp.get_client_by_id(args.data.client_id)
                 if client == nil then
                     return
                 end
                 -- document highlight
-                if client:supports_method(
-                        vim.lsp.protocol.Methods.textDocument_documentHighlight
-                    ) then
+                if client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
                     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
                         group = group,
                         buffer = args.buf,
@@ -29,22 +27,7 @@ return {
                         callback = vim.lsp.buf.clear_references,
                     })
                 end
-                -- lsp format on save
-                if client:supports_method(
-                        vim.lsp.protocol.Methods.textDocument_formatting
-                    ) then
-                    vim.api.nvim_create_autocmd("BufWritePre", {
-                        group = group,
-                        buffer = args.buf,
-                        callback = function()
-                            vim.lsp.buf.format({
-                                async = true,
-                                bufnr = args.buf,
-                            })
-                        end,
-                    })
-                end
             end,
         })
-    end
+    end,
 }

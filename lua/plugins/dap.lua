@@ -43,6 +43,6 @@ return {
     {
         "nvim-dap-view",
         spec = { src = "https://github.com/igorlfs/nvim-dap-view" },
-        event = { "BufReadPre", "BufNewFile" },
+        lazy = true,
     },
 }
