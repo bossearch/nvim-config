@@ -1,15 +1,14 @@
 return {
     "oil.nvim",
     spec = { src = "https://github.com/stevearc/oil.nvim" },
-    auoload = true,
-    cmd = "Oil",
     keys = {
         {
-            "<leader>o",
+            "<leader>O",
             "<cmd>lua require('oil').open(nil, { preview = {} })<cr>",
             mode = { "n" },
             noremap = true,
-            silent = true
+            silent = true,
+            desc = "Open Oil",
         },
     },
     after = function()
@@ -58,7 +57,37 @@ return {
             },
             use_default_keymaps = false,
         })
+
+        local function augroup(name)
+            return vim.api.nvim_create_augroup("user" .. name, { clear = true })
+        end
+
+        local function auto_delete_buffer()
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if
+                    vim.api.nvim_buf_is_valid(buf)
+                    and vim.api.nvim_buf_is_loaded(buf)
+                    and vim.bo[buf].buftype == ""
+                    and vim.bo[buf].filetype ~= ""
+                then
+                    local name = vim.api.nvim_buf_get_name(buf)
+                    if name ~= "" and not name:match("^%w+://") and not vim.uv.fs_stat(name) then
+                        vim.api.nvim_buf_delete(buf, { force = true })
+                    end
+                end
+            end
+        end
+
+        vim.api.nvim_create_autocmd("User", {
+            group = augroup("auto_delete_buffer"),
+            pattern = "OilActionsPost",
+            callback = function()
+                auto_delete_buffer()
+            end,
+        })
+
         vim.api.nvim_create_autocmd("FileType", {
+            group = augroup("toggle_columns"),
             pattern = "oil",
             callback = function()
                 vim.keymap.set("n", "gd", function()
@@ -83,5 +112,5 @@ return {
                 end, { buffer = true })
             end,
         })
-    end
+    end,
 }
