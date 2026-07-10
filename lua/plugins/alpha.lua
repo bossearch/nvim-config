@@ -2,20 +2,33 @@ return {
     "alpha-nvim",
     spec = { src = "https://github.com/goolord/alpha-nvim" },
     cmd = "Alpha",
+    before = function()
+        require("lz.n").trigger_load("plenary.nvim")
+    end,
     after = function()
         local alpha = require("alpha")
         local dashboard = require("alpha.themes.dashboard")
 
-        -- header
+        local height = vim.o.lines
+        local head_button_pad = 2
+        local button_button_pad = 1
+        local button_footer_pad = 1
+        local footer_footer_pad = 1
+        local builtin_button_pad = 1
+        if height <= 53 then
+            head_button_pad = 1
+            button_button_pad = 1
+            builtin_button_pad = 0
+            footer_footer_pad = 0
+        end
+
         local gh_contrib = require("lib._alpha").gh_contrib()
 
-        -- recent_files
         local recent_files = require("lib._alpha").recent_files()
 
-        -- projects
         local projects = require("lib._alpha").recent_project()
 
-        -- button
+        dashboard.section.buttons.opts.spacing = builtin_button_pad
         dashboard.section.buttons.val = {
             dashboard.button("s", "  Restore session", ":lua require('mini.sessions').read('global-session')<cr>"),
             dashboard.button("q", "  Quit", ":qa!<cr>"),
@@ -26,7 +39,6 @@ return {
             button.opts.hl = "SpecialComment"
         end
 
-        -- footer
         local function footer_1()
             local tip = require("lib._alpha").get_tips()
             local max_line_width = 60
@@ -97,15 +109,11 @@ return {
         dashboard.section.footer_3 = footer_3()
 
         -- layout
-        local head_button_pad = 2
-        local button_button_pad = 1
-        local button_footer_pad = button_button_pad
-        local footer_footer_pad = button_button_pad
         local alpha_height = #gh_contrib.val
             + head_button_pad
-            + #recent_files.val
+            + #recent_files.val()
             + button_button_pad
-            + #projects.val
+            + #projects.val()
             + button_button_pad
             + #dashboard.section.buttons.val
             + button_footer_pad
@@ -114,8 +122,9 @@ return {
             + #dashboard.section.footer_2.val
             + footer_footer_pad
             + #dashboard.section.footer_3.val
-            - 7
+            - 7 -- yeah some janky stuff for centering my dashboard
         local top_pad = math.max(0, math.ceil((vim.o.lines - alpha_height) / 2))
+
         dashboard.config.layout = {
             { type = "padding", val = top_pad },
             gh_contrib,
@@ -165,10 +174,6 @@ return {
                     vim.cmd("bd 1")
                 end
             end,
-        })
-
-        vim.api.nvim_exec_autocmds("User", {
-            pattern = "AlphaLoaded",
         })
     end,
 }

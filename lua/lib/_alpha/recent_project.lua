@@ -13,9 +13,13 @@ local function project_button(dashboard, dir, sc, short_dir)
         table.insert(fb_hl, { hl, 0, #ico })
     end
 
+    local ico_len = #ico_txt
     local dir_start = short_dir:match(".*[/\\]")
+
     if dir_start ~= nil then
-        table.insert(fb_hl, { "Comment", #ico_txt, #dir_start + #ico_txt })
+        table.insert(fb_hl, { "Comment", ico_len, #dir_start + ico_len })
+    else
+        table.insert(fb_hl, { "Number", ico_len, ico_len + #short_dir })
     end
 
     local cmd = string.format("<cmd>cd %s | Telescope find_files<CR>", vim.fn.fnameescape(dir))
@@ -68,53 +72,53 @@ local function get_projects(max_items)
         end
     end
 
-    -- Return an empty group block if no valid git projects exist to prevent printing an empty header
     if #projects == 0 then
         return { type = "group", val = {}, opts = { shrink_margin = false } }
     end
 
-    local pad_val = vim.o.lines <= 56 and 0 or 1
-    local buttons_tbl = {}
     local shortcuts = { "a", "b", "c", "d", "e" }
-
-    for i, dir in ipairs(projects) do
-        local short_dir = vim.fn.fnamemodify(dir, ":~")
-        local shortcut = shortcuts[i] or tostring(i)
-        local target_width = 60 - 4 - 2 - #shortcut
-
-        if #short_dir > target_width then
-            short_dir = plenary_path.new(short_dir):shorten(1, { -2, -1 })
-            if #short_dir > target_width then
-                short_dir = plenary_path.new(short_dir):shorten(1, { -1 })
-            end
-        end
-
-        table.insert(buttons_tbl, project_button(dashboard, dir, shortcut, short_dir))
-
-        -- Keep 1-line padding between buttons
-        if i < #projects then
-            table.insert(buttons_tbl, { type = "padding", val = pad_val })
-        end
-    end
 
     local section_projects = {
         type = "group",
-        val = {
-            {
+        val = function()
+            local elements = {}
+            local pad_val = vim.o.lines <= 53 and 0 or 1
+
+            table.insert(elements, {
                 type = "text",
                 val = "  Projects",
                 opts = { hl = "SpecialComment", shrink_margin = false, position = "center" },
-            },
-            { type = "padding", val = pad_val },
-        },
+            })
+
+            if pad_val > 0 then
+                table.insert(elements, { type = "padding", val = pad_val })
+            end
+
+            for i, dir in ipairs(projects) do
+                local short_dir = vim.fn.fnamemodify(dir, ":~")
+                local shortcut = shortcuts[i] or tostring(i)
+                local target_width = 60 - 4 - 2 - #shortcut
+
+                if #short_dir > target_width then
+                    short_dir = plenary_path.new(short_dir):shorten(1, { -2, -1 })
+                    if #short_dir > target_width then
+                        short_dir = plenary_path.new(short_dir):shorten(1, { -1 })
+                    end
+                end
+
+                local project_button_el = project_button(dashboard, dir, shortcut, short_dir)
+                table.insert(elements, project_button_el)
+
+                if i < #projects and pad_val > 0 then
+                    table.insert(elements, { type = "padding", val = pad_val })
+                end
+            end
+
+            return elements
+        end,
         opts = { shrink_margin = false },
     }
 
-    for _, item in ipairs(buttons_tbl) do
-        table.insert(section_projects.val, item)
-    end
-
-    section_projects.lines = #section_projects.val
     return section_projects
 end
 
