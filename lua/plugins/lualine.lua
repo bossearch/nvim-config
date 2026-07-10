@@ -6,15 +6,13 @@ return {
         require("lz.n").trigger_load("noice.nvim")
     end,
     after = function()
-        local theme = require("lualine.themes.auto")
-        theme.terminal = vim.deepcopy(theme.normal)
         require("lualine").setup({
             options = {
                 component_separators = { left = "", right = "" },
                 disabled_filetypes = { statusline = { "dashboard", "alpha" } },
                 globalstatus = true,
                 section_separators = { left = "", right = "" },
-                theme = theme,
+                theme = _G.lualine_theme,
                 always_show_tabline = true,
             },
             sections = {
@@ -80,6 +78,17 @@ return {
                     {
                         require("noice").api.status.mode.get,
                         cond = require("noice").api.status.mode.has,
+                        color = _G.lualine_theme.normal.x_1,
+                        separator = "│",
+                    },
+                    {
+                        function()
+                            return " " .. require("dap").status()
+                        end,
+                        cond = function()
+                            return package.loaded["dap"] and require("dap").status() ~= ""
+                        end,
+                        color = _G.lualine_theme.normal.x_2,
                         separator = "│",
                     },
                 },
