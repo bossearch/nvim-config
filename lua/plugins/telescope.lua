@@ -1,3 +1,89 @@
+local Mappings = {
+    find_files = "<leader><leader>f",
+    nvim_config = "<leader><leader>C",
+    icons = "<leader><leader>.",
+    commits = "<leader><leader>c",
+    mappings = "<leader><leader>m",
+    licenses = "<leader><leader>l",
+    oldfiles = "<leader><leader>r",
+    live_grep = "<leader><leader>g",
+    grep_string = "<leader><leader>s",
+    quickfix = "<leader><leader>q",
+    help_tags = "<leader><leader>h",
+    buffers = "<leader><leader>b",
+    diagnostics = "<leader><leader>d",
+    cmd_history = "<leader><leader>;",
+    search_hist = "<leader><leader>/",
+    registers = '<leader><leader>"',
+    marks = "<leader><leader>'",
+    highlights = "<leader><leader>H",
+}
+
+local lz_keys = {}
+for _, key_combo in pairs(Mappings) do
+    table.insert(lz_keys, { key_combo })
+end
+
+local ivy_opts = {
+    layout_strategy = "ivy_flush",
+    layout_config = { height = 0.6, prompt_position = "top", preview_cutoff = 0 },
+}
+
+local single_select_opts = {
+    preview_title = false,
+    selection_caret = "❯ ",
+    entry_prefix = "  ",
+    multi_icon = "",
+    mappings = {
+        i = {
+            ["<CR>"] = function(bufnr)
+                require("telescope.actions").select_default(bufnr)
+            end,
+            ["<Tab>"] = function() end,
+            ["<S-Tab>"] = function() end,
+        },
+        n = {
+            ["<CR>"] = function(bufnr)
+                require("telescope.actions").select_default(bufnr)
+            end,
+            ["<Tab>"] = function() end,
+            ["<S-Tab>"] = function() end,
+        },
+    },
+}
+
+local custom_picker_opts = {
+    attach_mappings = function(_, map)
+        map("i", "<Tab>", function() end)
+        map("n", "<Tab>", function() end)
+        map("i", "<S-Tab>", function() end)
+        map("n", "<S-Tab>", function() end)
+        return true
+    end,
+}
+
+local function single_or_multi_select(prompt_bufnr)
+    local action_state = require("telescope.actions.state")
+    local action_utils = require("telescope.actions.utils")
+    local current_picker = action_state.get_current_picker(prompt_bufnr)
+    if next(current_picker:get_multi_selection()) ~= nil then
+        local results = {}
+        action_utils.map_selections(prompt_bufnr, function(selection)
+            table.insert(results, selection[1])
+        end)
+        for _, filepath in ipairs(results) do
+            vim.cmd.badd({ args = { filepath } })
+        end
+        require("telescope.pickers").on_close_prompt(prompt_bufnr)
+        if vim.fn.bufname() == "" and not vim.bo.modified then
+            vim.cmd.bwipeout()
+            vim.cmd.buffer(results[1])
+        end
+        return
+    end
+    require("telescope.actions").file_edit(prompt_bufnr)
+end
+
 return {
     {
         "telescope.nvim",
@@ -5,9 +91,7 @@ return {
             src = "https://github.com/nvim-telescope/telescope.nvim",
             version = "master",
         },
-        event = { "BufReadPre", "BufNewFile", "User AlphaLoaded" },
-        -- TODO: move telescope keymap to keys
-        -- keys = {},
+        keys = lz_keys,
         before = function()
             require("lz.n").trigger_load("plenary.nvim")
             require("lz.n").trigger_load("telescope-fzf-native.nvim")
@@ -16,81 +100,9 @@ return {
         after = function()
             require("telescope").load_extension("fzf")
             require("telescope").load_extension("software_licenses")
-            local builtin = require("telescope.builtin")
-            local actions = require("telescope.actions")
-
-            -- multi open file
-            local action_state = require("telescope.actions.state")
-            local action_utils = require("telescope.actions.utils")
-            local function single_or_multi_select(prompt_bufnr)
-                local current_picker = action_state.get_current_picker(prompt_bufnr)
-                local has_multi_selection = (next(current_picker:get_multi_selection()) ~= nil)
-
-                if has_multi_selection then
-                    local results = {}
-                    action_utils.map_selections(prompt_bufnr, function(selection)
-                        table.insert(results, selection[1])
-                    end)
-                    for _, filepath in ipairs(results) do
-                        vim.cmd.badd({ args = { filepath } })
-                    end
-                    require("telescope.pickers").on_close_prompt(prompt_bufnr)
-                    if vim.fn.bufname() == "" and not vim.bo.modified then
-                        vim.cmd.bwipeout()
-                        vim.cmd.buffer(results[1])
-                    end
-                    return
-                end
-                require("telescope.actions").file_edit(prompt_bufnr)
-            end
-
             require("lib._telescope.layout")
-            local ivy_opts = {
-                layout_strategy = "ivy_flush",
-                layout_config = {
-                    height = 0.6,
-                    prompt_position = "top",
-                    preview_cutoff = 0,
-                },
-            }
 
-            local single_select_opts = {
-                preview_title = false,
-                selection_caret = "",
-                entry_prefix = "",
-                multi_icon = "",
-                mappings = {
-                    i = {
-                        ["<CR>"] = actions.select_default,
-                        ["<Tab>"] = actions.nop,
-                        ["<S-Tab>"] = actions.nop,
-                    },
-                    n = {
-                        ["<CR>"] = actions.select_default,
-                        ["<Tab>"] = actions.nop,
-                        ["<S-Tab>"] = actions.nop,
-                    },
-                },
-            }
-            local single_or_multi_select_opts = {
-                ---@diagnostic disable-next-line: unused-local
-                attach_mappings = function(_prompt_bufnr, map)
-                    map("i", "<cr>", single_or_multi_select)
-                    map("n", "<cr>", single_or_multi_select)
-                    return true
-                end,
-            }
-
-            local custom_picker_opts = {
-                ---@diagnostic disable-next-line: unused-local
-                attach_mappings = function(_prompt_bufnr, map)
-                    map("i", "<Tab>", actions.nop)
-                    map("n", "<Tab>", actions.nop)
-                    map("i", "<S-Tab>", actions.nop)
-                    map("n", "<S-Tab>", actions.nop)
-                    return true
-                end,
-            }
+            local builtin = require("telescope.builtin")
 
             require("telescope").setup({
                 defaults = vim.tbl_deep_extend("force", require("telescope.themes").get_ivy(ivy_opts), {
@@ -106,9 +118,7 @@ return {
                         follow = true,
                         hidden = true,
                         no_ignore = true,
-                        file_ignore_patterns = {
-                            "^%.git/",
-                        },
+                        file_ignore_patterns = { "^%.git/" },
                     },
                     live_grep = { preview_title = false },
                     quickfix = single_select_opts,
@@ -123,22 +133,30 @@ return {
                 },
             })
 
-            vim.keymap.set("n", "<leader><leader>f", function()
+            vim.keymap.set("n", Mappings.find_files, function()
                 builtin.find_files({
-                    attach_mappings = single_or_multi_select_opts.attach_mappings,
+                    attach_mappings = function(_, map)
+                        map("i", "<cr>", single_or_multi_select)
+                        map("n", "<cr>", single_or_multi_select)
+                        return true
+                    end,
                 })
             end)
 
-            vim.keymap.set("n", "<leader><leader>C", function()
+            vim.keymap.set("n", Mappings.nvim_config, function()
                 builtin.find_files({
                     prompt_title = "Neovim Config",
                     cwd = vim.fn.stdpath("config"),
-                    attach_mappings = single_or_multi_select_opts.attach_mappings,
+                    attach_mappings = function(_, map)
+                        map("i", "<cr>", single_or_multi_select)
+                        map("n", "<cr>", single_or_multi_select)
+                        return true
+                    end,
                 })
             end)
 
-            vim.keymap.set("n", "<leader><leader>.", function()
-                local icons_theme_opts = vim.tbl_deep_extend(
+            vim.keymap.set("n", Mappings.icons, function()
+                require("lib._telescope").icons(vim.tbl_deep_extend(
                     "force",
                     require("telescope.themes").get_cursor({
                         layout_config = {
@@ -148,12 +166,11 @@ return {
                     }),
                     single_select_opts,
                     custom_picker_opts
-                )
-                require("lib._telescope").icons(icons_theme_opts)
+                ))
             end)
 
-            vim.keymap.set("n", "<leader><leader>c", function()
-                local commits_theme_opts = vim.tbl_deep_extend(
+            vim.keymap.set("n", Mappings.commits, function()
+                require("lib._telescope").commits(vim.tbl_deep_extend(
                     "force",
                     require("telescope.themes").get_cursor({
                         layout_config = {
@@ -163,52 +180,50 @@ return {
                     }),
                     single_select_opts,
                     custom_picker_opts
-                )
-                require("lib._telescope").commits(commits_theme_opts)
+                ))
             end)
 
-            vim.keymap.set("n", "<leader><leader>m", function()
-                local mapping_theme_opts = vim.tbl_deep_extend(
-                    "force",
-                    require("telescope.themes").get_ivy(ivy_opts),
-                    single_select_opts,
-                    custom_picker_opts
+            vim.keymap.set("n", Mappings.mappings, function()
+                require("lib._telescope").mapping(
+                    vim.tbl_deep_extend(
+                        "force",
+                        require("telescope.themes").get_ivy(ivy_opts),
+                        single_select_opts,
+                        custom_picker_opts
+                    )
                 )
-                require("lib._telescope").mapping(mapping_theme_opts)
             end)
 
-            vim.keymap.set("n", "<leader><leader>l", function()
-                local license_opts = vim.tbl_deep_extend(
-                    "force",
-                    require("telescope.themes").get_ivy(ivy_opts),
-                    { prompt_title = "Software Licenses" },
-                    single_select_opts,
-                    custom_picker_opts
+            vim.keymap.set("n", Mappings.licenses, function()
+                require("telescope").extensions.software_licenses.find(
+                    vim.tbl_deep_extend(
+                        "force",
+                        require("telescope.themes").get_ivy(ivy_opts),
+                        { prompt_title = "Software Licenses" },
+                        single_select_opts,
+                        custom_picker_opts
+                    )
                 )
-                require("telescope").extensions.software_licenses.find(license_opts)
             end)
-            -- project
-            vim.keymap.set("n", "<leader><leader>r", builtin.oldfiles)
-            vim.keymap.set("n", "<leader><leader>g", builtin.live_grep)
-            vim.keymap.set("n", "<leader><leader>s", builtin.grep_string)
-            -- lines
-            vim.keymap.set("n", "<leader><leader>q", builtin.quickfix)
-            vim.keymap.set("n", "<leader><leader>h", builtin.help_tags)
-            vim.keymap.set("n", "<leader><leader>b", builtin.buffers)
-            vim.keymap.set("n", "<leader><leader>d", builtin.diagnostics)
-            -- notification
-            vim.keymap.set("n", "<leader><leader>;", builtin.command_history)
-            vim.keymap.set("n", "<leader><leader>/", builtin.search_history)
-            vim.keymap.set("n", '<leader><leader>"', builtin.registers)
-            vim.keymap.set("n", "<leader><leader>'", builtin.marks)
-            -- zoxide
-            vim.keymap.set("n", "<leader><leader>H", builtin.highlights)
+
+            vim.keymap.set("n", Mappings.oldfiles, builtin.oldfiles)
+            vim.keymap.set("n", Mappings.live_grep, builtin.live_grep)
+            vim.keymap.set("n", Mappings.grep_string, builtin.grep_string)
+            vim.keymap.set("n", Mappings.quickfix, builtin.quickfix)
+            vim.keymap.set("n", Mappings.help_tags, builtin.help_tags)
+            vim.keymap.set("n", Mappings.buffers, builtin.buffers)
+            vim.keymap.set("n", Mappings.diagnostics, builtin.diagnostics)
+            vim.keymap.set("n", Mappings.cmd_history, builtin.command_history)
+            vim.keymap.set("n", Mappings.search_hist, builtin.search_history)
+            vim.keymap.set("n", Mappings.registers, builtin.registers)
+            vim.keymap.set("n", Mappings.marks, builtin.marks)
+            vim.keymap.set("n", Mappings.highlights, builtin.highlights)
         end,
     },
     {
-        -- TODO: lazy load plenare
         "plenary.nvim",
         spec = { src = "https://github.com/nvim-lua/plenary.nvim" },
+        lazy = true,
     },
     {
         "telescope-fzf-native.nvim",
@@ -221,6 +236,7 @@ return {
             end
         end,
     },
+    -- TODO: remove this use snippets instead same with commits
     {
         "telescope-software-licenses.nvim",
         spec = { src = "https://github.com/chip/telescope-software-licenses.nvim" },
