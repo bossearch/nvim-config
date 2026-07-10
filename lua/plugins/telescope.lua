@@ -17,6 +17,7 @@ local Mappings = {
     registers = '<leader><leader>"',
     marks = "<leader><leader>'",
     highlights = "<leader><leader>H",
+    todos = "<leader><leader>t",
 }
 
 local lz_keys = {}
@@ -218,6 +219,19 @@ return {
             vim.keymap.set("n", Mappings.registers, builtin.registers)
             vim.keymap.set("n", Mappings.marks, builtin.marks)
             vim.keymap.set("n", Mappings.highlights, builtin.highlights)
+            vim.keymap.set("n", Mappings.todos, function()
+                require("telescope.builtin").grep_string({
+                    prompt_title = "Find Todo",
+                    search = [[\b(TODO|FIXME|FIX|HACK|WARN|PERF|TEST|BUG|NOTE):]],
+                    use_regex = true,
+                    attach_mappings = function(prompt_bufnr, _)
+                        local action_state = require("telescope.actions.state")
+                        local current_picker = action_state.get_current_picker(prompt_bufnr)
+                        require("lib.custom.todo").setup_highlights(current_picker.results_win)
+                        return true
+                    end,
+                })
+            end, { desc = "Find Todo" })
         end,
     },
     {
