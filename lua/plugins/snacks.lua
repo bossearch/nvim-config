@@ -37,21 +37,24 @@ return {
     keys = lz_keys,
     event = { "BufReadPre", "BufNewFile" },
     after = function()
-        local height = 0.6
-        local function row()
+        local heightFull = function(layout)
             if vim.bo.filetype == "alpha" then
-                return math.floor((vim.o.lines * (1 - height)) + 0.5)
+                layout.opts.backdrop = { bg = _G.SnacksBackdrop, blend = 0 }
+            else
+                layout.opts.backdrop = false
             end
-            return -1
+            return vim.o.lines - 3
         end
-        local integration = package.loaded["lib.custom.base16.integrations.snacks"] or {}
-        local custom_hl = integration.winhighlight_str or ""
-
-        local function apply_todo_highlights(win)
-            local my_matcher = package.loaded["lib.custom.todo"]
-            if my_matcher and my_matcher.setup_highlights then
-                my_matcher.setup_highlights(win.win)
+        local heightIvy = function(layout)
+            local height
+            if vim.bo.filetype == "alpha" then
+                layout.opts.backdrop = { bg = _G.SnacksBackdrop, blend = 0 }
+                height = (vim.o.lines - 3)
+            else
+                layout.opts.backdrop = false
+                height = 0.4
             end
+            return height
         end
         require("snacks").setup({
             bigfile = { enabled = true },
@@ -59,70 +62,69 @@ return {
             input = { enabled = true },
             picker = {
                 enabled = true,
-                -- ui_select = false,
                 prompt = " ",
                 layout = {
                     preset = function()
-                        return vim.o.columns >= 120 and "ivy" or "ivy_no_preview"
+                        return vim.o.columns >= 120 and "full" or "full_no_preview"
                     end,
                 },
                 layouts = {
-                    ivy = {
+                    full = {
+                        reverse = true,
                         layout = {
+                            backdrop = true,
+                            height = heightFull,
+                            border = "bottom",
                             box = "vertical",
-                            backdrop = false,
-                            width = 0,
-                            height = height,
-                            row = row,
-                            border = "top",
-                            title = " {title} {live} {flags}",
-                            title_pos = "left",
+                            wo = {},
+                            {
+                                win = "preview",
+                                height = 0.7,
+                                border = "bottom",
+                            },
+                            { win = "list", border = "none" },
                             {
                                 win = "input",
                                 height = 1,
-                                border = "bottom",
-                                wo = { winhighlight = custom_hl },
-                            },
-                            {
-                                box = "horizontal",
-                                {
-                                    win = "list",
-                                    border = "none",
-                                    wo = { winhighlight = custom_hl },
-                                },
-                                {
-                                    win = "preview",
-                                    width = 0.6,
-                                    border = "left",
-                                    wo = { winhighlight = custom_hl },
-                                },
+                                border = "top",
+                                title = "{title} {live} {flags}",
+                                title_pos = "center",
                             },
                         },
-                        on_win = apply_todo_highlights,
                     },
-                    ivy_no_preview = {
+                    full_no_preview = {
+                        reverse = true,
                         layout = {
-                            box = "vertical",
                             backdrop = false,
-                            width = 0,
-                            height = height,
-                            row = row,
-                            border = "top",
-                            title = " {title} {live} {flags}",
-                            title_pos = "left",
+                            height = heightFull,
+                            border = "bottom",
+                            box = "vertical",
+                            { win = "list", border = "none" },
                             {
                                 win = "input",
                                 height = 1,
-                                border = "bottom",
-                                wo = { winhighlight = custom_hl },
+                                border = "top",
+                                title = "{title} {live} {flags}",
+                                title_pos = "center",
                             },
+                        },
+                    },
+                    ivy = {
+                        reverse = true,
+                        layout = {
+                            backdrop = true,
+                            height = heightIvy,
+                            row = -1,
+                            border = "bottom",
+                            box = "vertical",
+                            wo = {},
+                            { win = "list", border = "top" },
                             {
-                                box = "horizontal",
-                                {
-                                    win = "list",
-                                    border = "none",
-                                    wo = { winhighlight = custom_hl },
-                                },
+                                win = "input",
+                                height = 1,
+                                border = "top",
+                                title = "{title} {live} {flags}",
+                                title_pos = "center",
                             },
                         },
                     },
@@ -140,22 +142,6 @@ return {
                             { win = "list", border = "none" },
                         },
                     },
-                    custom1 = {
-                        layout = {},
-                    },
-                },
-                formatters = {
-                    file = {
-                        filename_first = true,
-                        min_width = 40,
-                        icon_width = 2,
-                    },
-                },
-                previewers = {
-                    diff = {
-                        style = "syntax",
-                        cmd = { "delta" },
-                    },
                 },
                 win = {
                     input = {
@@ -170,9 +156,25 @@ return {
                     },
                     preview = {
                         wo = {
-                            signcolumn = "auto:1",
+                            number = true,
+                            relativenumber = false,
+                            statuscolumn = "",
+                            signcolumn = "yes:1",
                             cursorlineopt = "both",
                         },
+                    },
+                },
+                formatters = {
+                    file = {
+                        filename_first = true,
+                        min_width = 40,
+                        icon_width = 2,
+                    },
+                },
+                previewers = {
+                    diff = {
+                        style = "syntax",
+                        cmd = { "delta" },
                     },
                 },
             },
@@ -225,15 +227,15 @@ return {
                         }
                     elseif method == "keymaps" then
                         opts = {
-                            layout = { preset = "ivy_no_preview" },
+                            layout = { preset = "ivy" },
                         }
                     elseif method == "command_history" then
                         opts = {
-                            layout = { preset = "ivy_no_preview" },
+                            layout = { preset = "ivy" },
                         }
                     elseif method == "search_history" then
                         opts = {
-                            layout = { preset = "ivy_no_preview" },
+                            layout = { preset = "ivy" },
                         }
                     end
                     require("snacks").picker.pick(method, opts)
