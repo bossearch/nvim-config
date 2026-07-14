@@ -22,8 +22,18 @@
     }
 ,
     {
+      "language": "gitcommit",
+      "path": "./gitcommit.json"
+    }
+,
+    {
       "language": "kotlin",
       "path": "./kotlin.json"
+    }
+,
+    {
+      "language": "text",
+      "path": "./license.json"
     }
 ,
     {

@@ -8,6 +8,7 @@ declare -A OVERRIDES
 OVERRIDES["shell.json"]='["sh", "zsh", "shell", "shellscript"]'
 OVERRIDES["loremipsum.json"]='"all"'
 OVERRIDES["all.json"]='"all"'
+OVERRIDES["license.json"]='"text"'
 
 TEMP_JSON=$(mktemp)
 echo "[" >"$TEMP_JSON"

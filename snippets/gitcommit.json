@@ -1,0 +1,101 @@
+{
+  "conventional commit": {
+    "prefix": "cc_?",
+    "body": [
+      "${1:type}(${2:scope}): ${3:title}",
+      "",
+      "$0"
+    ],
+    "description": "custom convetional commit"
+  },
+  "fix conventional commit": {
+    "prefix": "cc_fix",
+    "body": [
+      "fix(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "bug fix for the user"
+  },
+  "feat conventional commit": {
+    "prefix": "cc_feat",
+    "body": [
+      "feat(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "new feature for the user"
+  },
+  "build conventional commit": {
+    "prefix": "cc_build",
+    "body": [
+      "build(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "changes affecting the build system or external dependencies"
+  },
+  "chore conventional commit": {
+    "prefix": "cc_chore",
+    "body": [
+      "chore(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "updating grunt tasks etc; no production code change"
+  },
+  "ci conventional commit": {
+    "prefix": "cc_ci",
+    "body": [
+      "ci(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "changes to CI configuration files or scripts"
+  },
+  "docs conventional commit": {
+    "prefix": "cc_docs",
+    "body": [
+      "docs(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "changes to the documentation"
+  },
+  "style conventional commit": {
+    "prefix": "cc_style",
+    "body": [
+      "style(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "changes that do not affect the meaning of the code (white-space, formatting, etc.)"
+  },
+  "refactor conventional commit": {
+    "prefix": "cc_refactor",
+    "body": [
+      "refactor(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "refactoring production code, eg. renaming a variable"
+  },
+  "perf conventional commit": {
+    "prefix": "cc_perf",
+    "body": [
+      "perf(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "code change that improves performance"
+  },
+  "test conventional commit": {
+    "prefix": "cc_test",
+    "body": [
+      "test(${1:scope}): ${2:title}",
+      "",
+      "$0"
+    ],
+    "description": "adding missing tests or correcting existing tests"
+  }
+}
