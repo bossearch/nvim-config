@@ -1,53 +1,59 @@
 local M = {}
 
-M.match = {
-    TodoTitle = [[\C\<TODO\s*:]],
-    TodoEntry = [[\C\<TODO\s*:\s*\zs.*]],
-
-    FixTitle = [[\C\<FIX\(ME\)\@!\s*:]],
-    FixEntry = [[\C\<FIX\(ME\)\@!\s*:\s*\zs.*]],
-
-    HackTitle = [[\C\<HACK\s*:]],
-    HackEntry = [[\C\<HACK\s*:\s*\zs.*]],
-
-    WarnTitle = [[\C\<WARN\s*:]],
-    WarnEntry = [[\C\<WARN\s*:\s*\zs.*]],
-
-    PerfTitle = [[\C\<PERF\s*:]],
-    PerfEntry = [[\C\<PERF\s*:\s*\zs.*]],
-
-    TestTitle = [[\C\<TEST\s*:]],
-    TestEntry = [[\C\<TEST\s*:\s*\zs.*]],
-
-    BugTitle = [[\C\<BUG\s*:]],
-    BugEntry = [[\C\<BUG\s*:\s*\zs.*]],
-
-    NoteTitle = [[\C\<NOTE\s*:]],
-    NoteEntry = [[\C\<NOTE\s*:\s*\zs.*]],
+M.keywords = {
+    Todo = { "TODO" },
+    Fix = { "FIX", "FIXME" },
+    Hack = { "HACK" },
+    Warn = { "WARN" },
+    Perf = { "PERF" },
+    Test = { "TEST" },
+    Bug = { "BUG" },
+    Note = { "NOTE" },
 }
 
 function M.setup_highlights(win_id)
-    local function apply()
-        for hl_group, pattern in pairs(M.match) do
-            vim.fn.matchadd(hl_group, pattern)
-        end
+    win_id = win_id or vim.api.nvim_get_current_win()
+    if not vim.api.nvim_win_is_valid(win_id) then
+        return
     end
 
-    if win_id and vim.api.nvim_win_is_valid(win_id) then
-        vim.api.nvim_win_call(win_id, apply)
-    else
-        apply()
-    end
+    vim.api.nvim_win_call(win_id, function()
+        for _, match in ipairs(vim.fn.getmatches()) do
+            if match.group:match("Title$") or match.group:match("Entry$") then
+                pcall(vim.fn.matchdelete, match.id)
+            end
+        end
+
+        for type, words in pairs(M.keywords) do
+            for _, word in ipairs(words) do
+                local t_name = type .. "Title"
+                local e_name = type .. "Entry"
+
+                local title_pat = string.format([[\C\<%s\>:]], word)
+                vim.fn.matchadd(t_name, title_pat, 12)
+
+                local entry_pat = string.format([[\C\<%s\>:\s*\zs.*]], word)
+                vim.fn.matchadd(e_name, entry_pat, 11)
+            end
+        end
+    end)
 end
 
-M.setup_highlights()
+function M.setup()
+    local group = vim.api.nvim_create_augroup("custom_todo_matcher", { clear = true })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "qf",
-    group = vim.api.nvim_create_augroup("todo_quickfix_hl", { clear = true }),
-    callback = function()
-        M.setup_highlights(vim.api.nvim_get_current_win())
-    end,
-})
+    vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+        group = group,
+        pattern = "*",
+        callback = function()
+            if vim.bo.filetype == "" or vim.bo.filetype == "snacks_picker_input" then
+                return
+            end
+            M.setup_highlights(vim.api.nvim_get_current_win())
+        end,
+    })
+end
+
+M.setup()
 
 return M

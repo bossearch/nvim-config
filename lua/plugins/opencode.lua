@@ -44,16 +44,4 @@ return {
             end, { desc = "Select prompt" })
         end,
     },
-    {
-        "snacks.nvim",
-        spec = { src = "https://github.com/folke/snacks.nvim" },
-        lazy = true,
-        after = function()
-            require("snacks").setup({
-                bigfile = { enabled = true },
-                image = { enabled = false },
-                input = { enabled = true },
-            })
-        end,
-    },
 }
