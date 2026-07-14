@@ -45,6 +45,7 @@ local function get_gh_contrib(path)
 
     local base_time = now - (sunday_offset + (n_weeks - 1) * 7) * 86400
 
+    -- Only show the last 6 months to keep the dashboard clean
     local allowed = {}
     for i = 0, 5 do
         local t = { year = today.year, month = today.month - i, day = 1 }
@@ -57,30 +58,42 @@ local function get_gh_contrib(path)
 
     for w = 0, n_weeks - 1 do
         local week_start = base_time + w * 7 * 86400
-        local month = os.date("%b", week_start)
+        local week_month = nil
 
-        if month ~= last_month and allowed[month] then
-            local col = w * 2 + 1
-            month_line = month_line:sub(1, col - 1) .. month .. month_line:sub(col + 3)
-            last_month = month
+        -- Figure out what day number every block is, and watch for the 1st of the month
+        for d = 0, 6 do
+            local timestamp = week_start + d * 86400
+            if (w * 7 + d + 1) <= total_days then
+                local idx = w * 7 + d + 1
+                local t = os.date("*t", timestamp)
+                day_numbers[idx] = t.day
+                if t.day == 1 then
+                    week_month = os.date("%b", timestamp)
+                end
+            end
         end
 
-        for d = 0, 6 do
-            local idx = w * 7 + d + 1
-            local t = os.date("*t", week_start + d * 86400)
-            day_numbers[idx] = t.day
+        -- Handle the edge case where data starts mid-month
+        if w == 0 and not week_month then
+            week_month = os.date("%b", week_start)
+        end
+
+        -- Drop the month label right above the column where the transition happens
+        if week_month and week_month ~= last_month and allowed[week_month] then
+            local col = w * 2 + 1
+            month_line = month_line:sub(1, col - 1) .. week_month .. month_line:sub(col + 3)
+            last_month = week_month
         end
     end
 
     local lines = { "    " .. month_line }
 
-    -- Pre-allocate alpha_hl for 1 header line + 7 day lines
     local alpha_hl = {}
     for i = 1, 8 do
         alpha_hl[i] = {}
     end
 
-    -- Pre-cache icon byte lengths to avoid re-evaluating '#' in tight loops
+    -- Cache string lengths so we aren't re-running '#' inside the loops
     local len_b_empty = #icons.block_empty
     local len_b_full = #icons.block_full
     local len_c_empty = #icons.circle_empty
@@ -96,7 +109,7 @@ local function get_gh_contrib(path)
         [6] = "    ",
     }
 
-    -- 2. Build Render Grid & Map Highlights Simultaneously
+    -- Build the matrix and map out text highlights at the same time
     for d = 0, 6 do
         local prefix = prefixes[d]
         local row_chunks = { prefix }
@@ -130,13 +143,12 @@ local function get_gh_contrib(path)
                 row_chunks[chunk_idx + 1] = " "
                 chunk_idx = chunk_idx + 2
 
-                -- Directly map highlights safely to alpha_hl structure
+                -- Track highlight positions for Alpha
                 table.insert(alpha_hl[line_index], {
                     colors[color] or "Normal",
                     current_byte_len,
                     current_byte_len + char_len,
                 })
-
                 current_byte_len = current_byte_len + char_len + 1
             else
                 row_chunks[chunk_idx] = "  "

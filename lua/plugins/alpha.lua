@@ -2,9 +2,6 @@ return {
     "alpha-nvim",
     spec = { src = "https://github.com/goolord/alpha-nvim" },
     cmd = "Alpha",
-    before = function()
-        require("lz.n").trigger_load("plenary.nvim")
-    end,
     after = function()
         local alpha = require("alpha")
         local dashboard = require("alpha.themes.dashboard")

@@ -3,6 +3,25 @@ local function icon(fn)
     return ico or "", hl
 end
 
+local function shorten_path(path, exclude_count)
+    local parts = {}
+    for part in string.gmatch(path, "[^/]+") do
+        table.insert(parts, part)
+    end
+    local num_parts = #parts
+    if num_parts == 0 then
+        return path
+    end
+
+    for i = 1, num_parts - exclude_count do
+        if parts[i] ~= "~" and parts[i] ~= "" then
+            parts[i] = parts[i]:sub(1, 1)
+        end
+    end
+    local prefix = path:sub(1, 1) == "/" and "/" or ""
+    return prefix .. table.concat(parts, "/")
+end
+
 local function file_button(dashboard, fn, sc, short_fn)
     short_fn = short_fn or fn
     local ico_txt
@@ -36,10 +55,6 @@ local function file_button(dashboard, fn, sc, short_fn)
 end
 
 local function get_recent_files(items_number)
-    local path_ok1, plenary_path = pcall(require, "plenary.path")
-    if not path_ok1 then
-        return {}
-    end
     pcall(vim.cmd.rshada)
     local dashboard = require("alpha.themes.dashboard")
     items_number = vim.F.if_nil(items_number, 10)
@@ -91,9 +106,9 @@ local function get_recent_files(items_number)
                 local target_width = 60 - 4 - 2 - #shortcut
 
                 if #short_fn > target_width then
-                    short_fn = plenary_path.new(short_fn):shorten(1, { -2, -1 })
+                    short_fn = shorten_path(short_fn, 2)
                     if #short_fn > target_width then
-                        short_fn = plenary_path.new(short_fn):shorten(1, { -1 })
+                        short_fn = shorten_path(short_fn, 1)
                     end
                 end
 

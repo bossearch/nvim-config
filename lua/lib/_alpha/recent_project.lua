@@ -3,6 +3,26 @@ local function icon()
     return ico or " ", hl or "Directory"
 end
 
+-- A pure Lua helper to replace Plenary path shortening
+local function shorten_path(path, exclude_count)
+    local parts = {}
+    for part in string.gmatch(path, "[^/]+") do
+        table.insert(parts, part)
+    end
+    local num_parts = #parts
+    if num_parts == 0 then
+        return path
+    end
+
+    for i = 1, num_parts - exclude_count do
+        if parts[i] ~= "~" and parts[i] ~= "" then
+            parts[i] = parts[i]:sub(1, 1)
+        end
+    end
+    local prefix = path:sub(1, 1) == "/" and "/" or ""
+    return prefix .. table.concat(parts, "/")
+end
+
 local function project_button(dashboard, dir, sc, short_dir)
     short_dir = short_dir or dir
     local ico, hl = icon()
@@ -32,10 +52,6 @@ local function project_button(dashboard, dir, sc, short_dir)
 end
 
 local function get_projects(max_items)
-    local path_ok1, plenary_path = pcall(require, "plenary.path")
-    if not path_ok1 then
-        return { type = "group", val = {}, opts = { shrink_margin = false } }
-    end
     pcall(vim.cmd.rshada)
     local dashboard = require("alpha.themes.dashboard")
     max_items = vim.F.if_nil(max_items, 5)
@@ -100,9 +116,9 @@ local function get_projects(max_items)
                 local target_width = 60 - 4 - 2 - #shortcut
 
                 if #short_dir > target_width then
-                    short_dir = plenary_path.new(short_dir):shorten(1, { -2, -1 })
+                    short_dir = shorten_path(short_dir, 2)
                     if #short_dir > target_width then
-                        short_dir = plenary_path.new(short_dir):shorten(1, { -1 })
+                        short_dir = shorten_path(short_dir, 1)
                     end
                 end
 
