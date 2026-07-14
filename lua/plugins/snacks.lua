@@ -15,6 +15,15 @@ local Mappings = {
     marks = "<leader><leader>m",
     highlights = "<leader><leader>H",
     todos = "<leader><leader>t",
+    -- lsp stuff
+    lsp_config = "grc",
+    lsp_definitions = "gd",
+    lsp_declarations = "gD",
+    lsp_implementations = "gri",
+    lsp_type_definitions = "grt",
+    lsp_symbols = "gO",
+    lsp_references = "grr",
+    lsp_workspace_symbols = "gW",
 }
 
 local lz_keys = {}
@@ -26,6 +35,7 @@ return {
     "snacks.nvim",
     spec = { src = "https://github.com/folke/snacks.nvim" },
     keys = lz_keys,
+    event = { "BufReadPre", "BufNewFile" },
     after = function()
         local height = 0.6
         local function row()
@@ -130,6 +140,9 @@ return {
                             { win = "list", border = "none" },
                         },
                     },
+                    custom1 = {
+                        layout = {},
+                    },
                 },
                 formatters = {
                     file = {
@@ -164,6 +177,23 @@ return {
                 },
             },
         })
+        -- generate description
+        local function get_desc(method_name)
+            if string.match(method_name, "^lsp_") then
+                local clean_name = string.gsub(method_name, "^lsp_", "")
+                clean_name = string.gsub(clean_name, "_", " ")
+                clean_name = string.gsub(clean_name, "(%a)([%w]*)", function(first, rest)
+                    return string.upper(first) .. rest
+                end)
+                return "LSP: " .. clean_name
+            else
+                local clean_name = string.gsub(method_name, "_", " ")
+                clean_name = string.gsub(clean_name, "(%a)([%w]*)", function(first, rest)
+                    return string.upper(first) .. rest
+                end)
+                return "Find " .. clean_name
+            end
+        end
 
         for method, key in pairs(Mappings) do
             if method ~= "nvim_config" and method ~= "todos" then
@@ -207,7 +237,7 @@ return {
                         }
                     end
                     require("snacks").picker.pick(method, opts)
-                end)
+                end, { desc = get_desc(method) })
             end
         end
 
@@ -225,6 +255,6 @@ return {
                 regex = true,
                 live = false,
             })
-        end)
+        end, { desc = "Find Todo" })
     end,
 }
