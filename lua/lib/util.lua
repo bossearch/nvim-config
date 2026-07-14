@@ -56,8 +56,48 @@ end
 -- lualine --
 util.get_cwd = function()
     local cwd = vim.fn.getcwd()
-    local folder_name = vim.fn.fnamemodify(cwd, ":t")
-    return folder_name
+    local cwd_name = "󰝰 " .. vim.fn.fnamemodify(cwd, ":t")
+    return cwd_name
+end
+
+util.filename = function()
+    local status = ""
+    if vim.bo.readonly then
+        status = " [RO]"
+    elseif vim.fn.expand("%:t") == "" then
+        status = ""
+    end
+
+    local path = vim.fn.expand("%:.")
+    if path == "" then
+        path = "[No Name]"
+    end
+
+    local max_width = math.floor(vim.o.columns / 2)
+    if #path > max_width then
+        path = vim.fn.pathshorten(path)
+        if #path > max_width then
+            path = "..." .. string.sub(path, #path - max_width + 4)
+        end
+    end
+
+    return path .. status
+end
+
+util.no_lsp = function()
+    local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
+    if #clients == 0 then
+        return "No LSP 󰒏"
+    else
+        return ""
+    end
+end
+
+util.separator = function(sep, persist_sep)
+    if vim.bo.buftype ~= "" then
+        return persist_sep or ""
+    end
+    return sep
 end
 
 return util
