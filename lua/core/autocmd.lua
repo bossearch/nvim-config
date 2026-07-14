@@ -41,17 +41,6 @@ autocmd("BufWritePre", {
     end,
 })
 
-autocmd("CursorMoved", {
-    group = augroup("auto_nohlsearch"),
-    callback = function()
-        if vim.v.hlsearch == 1 and vim.fn.searchcount().exact_match == 0 then
-            vim.schedule(function()
-                vim.cmd("nohlsearch")
-            end)
-        end
-    end,
-})
-
 autocmd("FileType", {
     group = augroup("formatoptions"),
     pattern = "*",
@@ -62,6 +51,44 @@ autocmd("FileType", {
             vim.opt_local.formatoptions:append("r")
             vim.opt_local.formatoptions:append("o")
             vim.opt_local.spell = true
+        end
+    end,
+})
+
+autocmd("BufReadPost", {
+    group = augroup("return_to_last_cursor_position"),
+    callback = function()
+        if vim.o.diff then
+            return
+        end
+        local last_pos = vim.api.nvim_buf_get_mark(0, '"')
+        local last_line = vim.api.nvim_buf_line_count(0)
+        local row = last_pos[1]
+        if row < 1 or row > last_line then
+            return
+        end
+        pcall(vim.api.nvim_win_set_cursor, 0, last_pos)
+    end,
+})
+
+autocmd("TermOpen", {
+    group = augroup("custom_terminal"),
+    callback = function()
+        vim.opt_local.number = false
+        vim.opt_local.relativenumber = false
+        vim.opt_local.statuscolumn = ""
+        vim.opt_local.cursorline = false
+        vim.b.miniindentscope_disable = true
+    end,
+})
+
+autocmd({ "BufWritePre", "QuitPre" }, {
+    group = augroup("kill_terminal"),
+    callback = function()
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.bo[buf].buftype == "terminal" then
+                vim.cmd("bdelete! " .. buf)
+            end
         end
     end,
 })
