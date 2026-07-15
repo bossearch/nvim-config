@@ -75,7 +75,13 @@ local function get_recent_files(items_number)
     end
 
     if #oldfiles == 0 then
-        return { type = "group", val = {}, opts = { shrink_margin = false } }
+        return {
+            type = "group",
+            val = function()
+                return {}
+            end,
+            opts = { shrink_margin = false },
+        }
     end
 
     local shortcuts = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" }

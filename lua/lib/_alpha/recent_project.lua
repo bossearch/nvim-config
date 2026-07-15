@@ -3,7 +3,6 @@ local function icon()
     return ico or " ", hl or "Directory"
 end
 
--- A pure Lua helper to replace Plenary path shortening
 local function shorten_path(path, exclude_count)
     local parts = {}
     for part in string.gmatch(path, "[^/]+") do
@@ -42,7 +41,10 @@ local function project_button(dashboard, dir, sc, short_dir)
         table.insert(fb_hl, { "Number", ico_len, ico_len + #short_dir })
     end
 
-    local cmd = string.format("<cmd>cd %s | Telescope find_files<CR>", vim.fn.fnameescape(dir))
+    -- telescope
+    -- local cmd = string.format("<cmd>lua require('telescope.builtin').find_files({ cwd = '%s' })<CR>", vim.fn.fnameescape(dir))
+    -- snacks picker
+    local cmd = string.format("<cmd>lua require('snacks').picker.files({ cwd = '%s' })<CR>", vim.fn.fnameescape(dir))
 
     local button_el = dashboard.button(sc, ico_txt .. short_dir, cmd)
     button_el.opts.width = 60
@@ -89,7 +91,13 @@ local function get_projects(max_items)
     end
 
     if #projects == 0 then
-        return { type = "group", val = {}, opts = { shrink_margin = false } }
+        return {
+            type = "group",
+            val = function()
+                return {}
+            end,
+            opts = { shrink_margin = false },
+        }
     end
 
     local shortcuts = { "a", "b", "c", "d", "e" }
