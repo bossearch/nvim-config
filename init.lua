@@ -1,5 +1,8 @@
 vim.loader.enable()
 
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 local util = require("lib.util")
 
 util.scan_modules("lua/core", "core.")
