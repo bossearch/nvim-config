@@ -4,6 +4,10 @@
       "rev": "6c6a89d5b068b5251c8bdf0dd57bb921bcfeeb09",
       "src": "https://github.com/goolord/alpha-nvim"
     },
+    "baleia.nvim": {
+      "rev": "710537ff5cd669c5a76c5f5b6a9169fd9b913d18",
+      "src": "https://github.com/m00qek/baleia.nvim"
+    },
     "blink-ripgrep.nvim": {
       "rev": "22003ca322fdbe68935386930d496aadb41f57dd",
       "src": "https://github.com/mikavilpas/blink-ripgrep.nvim"
