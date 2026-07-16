@@ -1,46 +1,60 @@
-local heightFull = function(layout)
+local snacks = package.loaded["lib.custom.base16.integrations.snacks"]
+local snacks_backdrop = snacks.backdrop
+local custom_hl = snacks.custom_hl
+
+local function dynamic_layout_config(layout)
     if vim.bo.filetype == "alpha" then
-        layout.opts.backdrop = { bg = _G.SnacksBackdrop, blend = 0 }
+        layout.opts.backdrop = { bg = snacks_backdrop, blend = 0 }
     else
         layout.opts.backdrop = false
     end
-    return vim.o.lines - 3
 end
-local heightIvy = function(layout)
-    local height
-    if vim.bo.filetype == "alpha" then
-        layout.opts.backdrop = { bg = _G.SnacksBackdrop, blend = 0 }
-        height = (vim.o.lines - 3)
-    else
-        layout.opts.backdrop = false
-        height = 0.4
-    end
-    return height
+
+local height_full = function(layout)
+    dynamic_layout_config(layout)
+    return vim.o.lines - 2
 end
+
+local row_ivy = function(layout)
+    dynamic_layout_config(layout)
+    return -1
+end
+local custom_ivy = {
+    layout = {
+        row = row_ivy,
+        border = "none",
+        box = "vertical",
+        {
+            win = "input",
+            height = 1,
+            border = "top",
+            title = "{title} {live} {flags}",
+            title_pos = "center",
+        },
+        {
+            win = "list",
+            border = "top",
+            height = 20,
+        },
+    },
+}
 
 return {
     enabled = true,
     prompt = " ",
     layout = {
-        preset = function()
-            return vim.o.columns >= 120 and "full" or "full_no_preview"
-        end,
+        preset = "full",
     },
     layouts = {
         full = {
-            reverse = true,
             layout = {
-                backdrop = true,
-                height = heightFull,
-                border = "bottom",
+                height = height_full,
+                border = "none",
                 box = "vertical",
-                wo = {},
                 {
                     win = "preview",
-                    height = 0.7,
-                    border = "bottom",
+                    border = "none",
                 },
-                { win = "list", border = "none" },
                 {
                     win = "input",
                     height = 1,
@@ -48,66 +62,43 @@ return {
                     title = "{title} {live} {flags}",
                     title_pos = "center",
                 },
-            },
-        },
-        full_no_preview = {
-            reverse = true,
-            layout = {
-                backdrop = false,
-                height = heightFull,
-                border = "bottom",
-                box = "vertical",
-                { win = "list", border = "none" },
                 {
-                    win = "input",
-                    height = 1,
+                    win = "list",
                     border = "top",
-                    title = "{title} {live} {flags}",
-                    title_pos = "center",
+                    height = 20,
                 },
             },
         },
-        ivy = {
-            reverse = true,
-            layout = {
-                backdrop = true,
-                height = heightIvy,
-                row = -1,
-                border = "bottom",
-                box = "vertical",
-                wo = {},
-                { win = "list", border = "top" },
-                {
-                    win = "input",
-                    height = 1,
-                    border = "top",
-                    title = "{title} {live} {flags}",
-                    title_pos = "center",
-                },
-            },
-        },
-        select_icons = {
-            hidden = { "preview" },
+        -- change full_no_preview to ivy so neogit can use this
+        ivy = custom_ivy,
+        -- change vscode to use same layout as ivy for opencode
+        vscode = custom_ivy,
+        select = {
             layout = {
                 backdrop = false,
                 max_width = 67,
-                max_height = 12,
+                border = "none",
                 box = "vertical",
-                border = "top",
-                title = "{title}",
-                title_pos = "center",
-                { win = "input", height = 1, border = "bottom" },
-                { win = "list", border = "none" },
+                {
+                    win = "input",
+                    height = 1,
+                    border = "top",
+                    title = "{title} {live} {flags}",
+                    title_pos = "center",
+                    wo = { winhighlight = custom_hl },
+                },
+                {
+                    win = "list",
+                    border = "top",
+                    height = 10,
+                    wo = { winhighlight = custom_hl },
+                },
             },
         },
     },
     win = {
         input = {
             keys = {
-                ["J"] = { "preview_scroll_down", mode = "n" },
-                ["K"] = { "preview_scroll_up", mode = "n" },
-                ["H"] = { "preview_scroll_left", mode = "n" },
-                ["L"] = { "preview_scroll_right", mode = "n" },
                 ["-"] = { "edit_split", mode = "n" },
                 ["|"] = { "edit_vsplit", mode = "n" },
             },
@@ -125,13 +116,13 @@ return {
     formatters = {
         file = {
             filename_first = true,
-            min_width = 40,
+            truncate = "center",
             icon_width = 2,
         },
     },
     previewers = {
         diff = {
-            style = "syntax",
+            style = "terminal",
             cmd = { "delta" },
         },
     },

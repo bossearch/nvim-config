@@ -57,7 +57,7 @@ local keymap = function()
                     opts = { hidden = true, follow = true, ignored = true }
                 elseif method == "icons" then
                     opts = {
-                        layout = { preset = "select_icons", layout = { relative = "cursor" } },
+                        layout = { preset = "select", layout = { relative = "cursor" } },
                         custom_sources = {
                             my_custom_icons = vim.fn.stdpath("config") .. "/lua/lib/icons.json",
                         },
@@ -73,7 +73,7 @@ local keymap = function()
                                 { "  " },
                                 { name_col, "Normal" },
                                 { "  " },
-                                { category, "Comment" },
+                                { category, "SpecialKey" },
                             }
                         end,
                     }
