@@ -41,14 +41,6 @@
       "rev": "bf8169f3e518be8de3f88073ace37d91f576cb04",
       "src": "https://github.com/echasnovski/mini.nvim"
     },
-    "noice.nvim": {
-      "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
-      "src": "https://github.com/folke/noice.nvim"
-    },
-    "nui.nvim": {
-      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
-      "src": "https://github.com/MunifTanjim/nui.nvim"
-    },
     "neogit": {
       "rev": "43ea1a0854052e583f647e0b35879f0158a70a78",
       "src": "https://github.com/NeogitOrg/neogit"

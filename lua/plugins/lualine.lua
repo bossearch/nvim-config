@@ -2,9 +2,6 @@ return {
     "lualine.nvim",
     spec = { src = "https://github.com/nvim-lualine/lualine.nvim" },
     event = { "BufReadPre", "BufNewFile" },
-    before = function()
-        require("lz.n").trigger_load("noice.nvim")
-    end,
     after = function()
         require("lualine").setup({
             options = {
@@ -116,12 +113,6 @@ return {
                         },
                         colored = true,
                         update_in_insert = false,
-                        separator = "│",
-                    },
-                    {
-                        require("noice").api.status.mode.get,
-                        cond = require("noice").api.status.mode.has,
-                        color = _G.lualine_theme.custom.b,
                         separator = "│",
                     },
                     {

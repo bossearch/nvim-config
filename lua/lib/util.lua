@@ -31,6 +31,16 @@ util.scan_modules = function(sub_dir, require_prefix, callback)
     end
 end
 
+-- total window --
+util.get_window = function()
+    local tab_wins = vim.fn.gettabinfo(vim.fn.tabpagenr())[1].windows
+    local total_window = vim.tbl_filter(function(win_id)
+        local config = vim.api.nvim_win_get_config(win_id)
+        return config.relative == ""
+    end, tab_wins)
+    return total_window
+end
+
 -- usercmd --
 util.copy_to_clipboard = function(content)
     vim.fn.setreg("+", content)
