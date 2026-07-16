@@ -3,13 +3,16 @@ return {
     spec = { src = "https://github.com/nvim-lualine/lualine.nvim" },
     event = { "BufReadPre", "BufNewFile" },
     after = function()
+        local lualine = package.loaded["lib.custom.base16.integrations.lualine"]
+        local mytheme = lualine.mytheme
+
         require("lualine").setup({
             options = {
                 component_separators = { left = "", right = "" },
                 disabled_filetypes = { statusline = { "alpha" } },
                 globalstatus = true,
                 section_separators = { left = "", right = "" },
-                theme = _G.lualine_theme,
+                theme = mytheme,
                 always_show_tabline = true,
             },
             tabline = {
@@ -29,6 +32,8 @@ return {
                             oil = "Oil",
                             qf = " Quickfix",
                             snacks_picker_input = "󰢷 Picker",
+                            NeogitStatus = " Neogit Status",
+                            NeogitPopup = " Neogit Popup",
                         },
 
                         symbols = {
@@ -38,7 +43,7 @@ return {
                         },
                         use_mode_colors = false,
                         buffers_color = {
-                            active = _G.lualine_theme.custom.a,
+                            active = mytheme.custom.a,
                         },
                     },
                 },
@@ -54,36 +59,45 @@ return {
                 },
             },
             sections = {
-                lualine_a = { "mode" },
-                lualine_b = { "fileformat", "encoding" },
-                lualine_c = {
+                lualine_a = {
+                    {
+                        "mode",
+                        padding = { left = 1, right = 0 },
+                        separator = "▕",
+                    },
+                    "fileformat",
+                },
+                lualine_b = {
                     {
                         require("lib.util").get_cwd,
                         padding = { left = 1, right = 0 },
-                        separator = false,
                     },
                     {
                         function()
-                            return require("lib.util").separator("/")
+                            return require("lib.util").separator("/", "/ ")
                         end,
-                        color = _G.lualine_theme.custom.a,
+                        padding = { left = 0, right = 0 },
+                    },
+                },
+                lualine_c = {
+                    {
+                        function()
+                            return require("lib.util").separator("", " ")
+                        end,
                         padding = { left = 0, right = 0 },
                     },
                     {
                         require("lib.util").filename,
-                        color = _G.lualine_theme.custom.a,
                         padding = { left = 0, right = 1 },
                     },
                     {
                         function()
                             return require("lib.util").separator("-")
                         end,
-                        color = _G.lualine_theme.custom.a,
                         padding = { left = 0, right = 1 },
                     },
                     {
                         "filesize",
-                        color = _G.lualine_theme.custom.a,
                         padding = { left = 0, right = 1 },
                     },
                 },
@@ -111,9 +125,13 @@ return {
                             info = "I",
                             hint = "H",
                         },
-                        colored = true,
                         update_in_insert = false,
                         separator = "│",
+                    },
+                    {
+                        require("lib.util").macro,
+                        separator = "│",
+                        color = mytheme.custom.b,
                     },
                     {
                         function()
@@ -122,7 +140,7 @@ return {
                         cond = function()
                             return package.loaded["dap"] and require("dap").status() ~= ""
                         end,
-                        color = _G.lualine_theme.custom.c,
+                        color = mytheme.custom.c,
                         separator = "│",
                     },
                 },
@@ -138,6 +156,21 @@ return {
                     end,
                 },
                 lualine_z = {
+                    {
+                        function()
+                            if package.loaded["opencode"] then
+                                local ok, statusline = pcall(function()
+                                    return require("opencode").statusline()
+                                end)
+
+                                if ok and statusline then
+                                    return statusline
+                                end
+                            end
+                            return "󱚧"
+                        end,
+                        separator = "│",
+                    },
                     require("lib.util").no_lsp,
                     {
                         "lsp_status",
@@ -145,7 +178,7 @@ return {
                         symbols = {
                             spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
                             done = "󰒋",
-                            separator = "│",
+                            separator = "|",
                         },
                         ignore_lsp = { "render-markdown" },
                         show_name = true,

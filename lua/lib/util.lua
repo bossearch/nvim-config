@@ -110,4 +110,12 @@ util.separator = function(sep, persist_sep)
     return sep
 end
 
+util.macro = function()
+    local reg = vim.fn.reg_recording()
+    if reg == "" then
+        return ""
+    end
+    return "recording @" .. reg
+end
+
 return util
