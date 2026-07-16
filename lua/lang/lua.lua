@@ -1,15 +1,19 @@
 local lua = {}
 
+local generated = dofile(vim.fn.stdpath("cache") .. "/generated.lua")
+local hyprland = generated.hyprland
+
 lua.lsp = {
     lua_ls = {
         settings = {
             Lua = {
                 runtime = { version = "LuaJIT" },
-                diagnostics = { globals = { "vim", "require" } },
+                diagnostics = { globals = { "vim", "require", "hl" } },
                 workspace = {
                     preloadFileSize = 10000,
                     library = {
                         vim.env.VIMRUNTIME,
+                        hyprland,
                     },
                 },
                 telemetry = { enable = false },
