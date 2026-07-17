@@ -5,7 +5,7 @@ return {
             src = "https://github.com/nickjvandyke/opencode.nvim",
             version = vim.version.range("*"),
         },
-        event = "InsertEnter",
+        keys = "<leader>o",
         before = function()
             require("lz.n").trigger_load("snacks.nvim")
         end,
