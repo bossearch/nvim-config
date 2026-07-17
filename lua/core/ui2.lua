@@ -45,7 +45,7 @@ vim.api.nvim_create_autocmd("CmdlineLeavePre", {
         vim.schedule(function()
             vim.opt.laststatus = 3
             local window = require("lib.util").get_window()
-            if #window > 1 then
+            if #window > 1 or vim.bo.filetype == "NeogitStatus" then
                 if package.loaded["lualine"] then
                     pcall(function()
                         require("lualine").hide({ unhide = true, place = { "statusline" } })
