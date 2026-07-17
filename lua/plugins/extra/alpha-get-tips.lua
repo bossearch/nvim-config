@@ -103,4 +103,4 @@ local function get_tips()
     return table.concat(lines, "\n")
 end
 
-return get_tips
+return get_tips()

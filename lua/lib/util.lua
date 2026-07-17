@@ -14,18 +14,20 @@ util.scan_modules = function(sub_dir, require_prefix, callback)
     for name, type in vim.fs.dir(full_path) do
         if type == "file" and name:match("%.lua$") and not name:match("^%.") then
             local base_name = name:gsub("%.lua$", "")
-            local module_path = require_prefix .. base_name
-            local success, module = pcall(require, module_path)
-            if success then
-                if callback then
-                    callback(module, base_name)
+            if base_name ~= "init" then
+                local module_path = require_prefix .. base_name
+                local success, module = pcall(require, module_path)
+                if success then
+                    if callback then
+                        callback(module, base_name)
+                    end
+                else
+                    vim.notify(
+                        string.format("Failed to load module %s:\n%s", module_path, module),
+                        vim.log.levels.ERROR,
+                        { title = "Scan Modules" }
+                    )
                 end
-            else
-                vim.notify(
-                    string.format("Failed to load module %s:\n%s", module_path, module),
-                    vim.log.levels.ERROR,
-                    { title = "Scan Modules" }
-                )
             end
         end
     end

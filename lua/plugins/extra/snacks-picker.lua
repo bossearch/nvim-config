@@ -1,4 +1,4 @@
-local snacks = package.loaded["lib.custom.base16.integrations.snacks"]
+local snacks = package.loaded["plugins.custom.colorscheme.integrations.snacks"]
 local snacks_backdrop = snacks.backdrop
 local custom_hl = snacks.custom_hl
 

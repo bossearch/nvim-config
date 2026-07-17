@@ -180,4 +180,4 @@ local function get_gh_contrib(path)
     return section_contrib
 end
 
-return get_gh_contrib
+return get_gh_contrib()

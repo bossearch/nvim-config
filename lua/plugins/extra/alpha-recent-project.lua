@@ -146,4 +146,4 @@ local function get_projects(max_items)
     return section_projects
 end
 
-return get_projects
+return get_projects()

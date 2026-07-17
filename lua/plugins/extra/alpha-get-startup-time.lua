@@ -71,8 +71,6 @@ M.start = function()
     )
 end
 
-return setmetatable(M, {
-    __call = function(self)
-        self.start()
-    end,
-})
+M.start()
+
+return M

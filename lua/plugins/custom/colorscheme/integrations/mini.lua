@@ -22,7 +22,7 @@ return {
         hi('MiniIconsYellow', {fg=p.base0A, bg=nil, attr=nil, sp=nil})
 
         hi('MiniIndentscopeSymbol',    {fg=p.base03, bg=nil, attr=nil, sp=nil})
-        hi('MiniIndentscopeSymbolOff', {fg=p.base01, bg=nil, attr=nil, sp=nil})
+        hi('MiniIndentscopeSymbolOff', {fg=p.base03, bg=nil, attr=nil, sp=nil})
 
         hi('MiniSurround', {link='IncSearch'})
     end,

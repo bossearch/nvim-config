@@ -110,7 +110,7 @@ H.highlight = function(group, args, palette)
     end
 
     if attr == "trans" and bg ~= "NONE" then
-        bg = blend(bg, palette.base00, 0.4)
+        bg = blend(bg, palette.base01, 0.4)
         attr = "NONE"
     end
 
@@ -148,17 +148,21 @@ H.apply_palette = function(palette)
     -- load integrations
     local util = require("lib.util")
 
-    util.scan_modules("lua/lib/custom/base16/builtin", "lib.custom.base16.builtin.", function(module)
+    util.scan_modules("lua/plugins/custom/colorscheme/builtin", "plugins.custom.colorscheme.builtin.", function(module)
         if type(module.setup) == "function" then
             module.setup(p, hi)
         end
     end)
 
-    util.scan_modules("lua/lib/custom/base16/integrations", "lib.custom.base16.integrations.", function(module)
-        if type(module.setup) == "function" then
-            module.setup(p, hi)
+    util.scan_modules(
+        "lua/plugins/custom/colorscheme/integrations",
+        "plugins.custom.colorscheme.integrations.",
+        function(module)
+            if type(module.setup) == "function" then
+                module.setup(p, hi)
+            end
         end
-    end)
+    )
 end
 
 return Base16

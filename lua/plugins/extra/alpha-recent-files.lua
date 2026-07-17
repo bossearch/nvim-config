@@ -134,4 +134,4 @@ local function get_recent_files(items_number)
     return section_recent_files
 end
 
-return get_recent_files
+return get_recent_files()

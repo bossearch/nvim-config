@@ -19,11 +19,11 @@ return {
             footer_footer_pad = 0
         end
 
-        local gh_contrib = require("lib._alpha").gh_contrib()
+        local gh_contrib = require("plugins.extra.alpha-gh-contrib")
 
-        local recent_files = require("lib._alpha").recent_files()
+        local recent_files = require("plugins.extra.alpha-recent-files")
 
-        local projects = require("lib._alpha").recent_project()
+        local projects = require("plugins.extra.alpha-recent-project")
 
         dashboard.section.buttons.opts.spacing = builtin_button_pad
         dashboard.section.buttons.val = {
@@ -37,7 +37,7 @@ return {
         end
 
         local function footer_1()
-            local tip = require("lib._alpha").get_tips()
+            local tip = require("plugins.extra.alpha-get-tips")
             local max_line_width = 60
             local lines = {}
             for raw_line in vim.gsplit(tip, "\n", { trimempty = true }) do
@@ -75,7 +75,7 @@ return {
         end
         local function footer_2()
             local p = vim.pack.get()
-            local time = require("lib._alpha").get_startup_time._startup_time
+            local time = require("plugins.extra.alpha-get-startup-time")._startup_time
             return {
                 type = "text",
                 val = { " Neovim loaded " .. #p .. " plugins in " .. time },

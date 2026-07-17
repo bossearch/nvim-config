@@ -3,7 +3,7 @@ return {
     spec = { src = "https://github.com/nvim-lualine/lualine.nvim" },
     event = { "BufReadPre", "BufNewFile" },
     after = function()
-        local lualine = package.loaded["lib.custom.base16.integrations.lualine"]
+        local lualine = package.loaded["plugins.custom.colorscheme.integrations.lualine"]
         local mytheme = lualine.mytheme
 
         require("lualine").setup({
