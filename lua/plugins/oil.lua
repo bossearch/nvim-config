@@ -3,7 +3,7 @@ return {
     spec = { src = "https://github.com/stevearc/oil.nvim" },
     keys = {
         {
-            "<leader>O",
+            "<leader>e",
             "<cmd>lua require('oil').open(nil, { preview = {} })<cr>",
             mode = { "n" },
             noremap = true,
@@ -50,10 +50,8 @@ return {
                 [".."] = { "actions.parent", mode = "n" },
                 ["gr"] = "actions.refresh",
                 ["gt"] = { "actions.toggle_trash", mode = "n" },
-                ["H"] = { "actions.preview_scroll_left", mode = "n" },
-                ["J"] = { "actions.preview_scroll_down", mode = "n" },
-                ["K"] = { "actions.preview_scroll_up", mode = "n" },
-                ["L"] = { "actions.preview_scroll_right", mode = "n" },
+                ["<C-f>"] = { "actions.preview_scroll_down", mode = "n" },
+                ["<C-b>"] = { "actions.preview_scroll_up", mode = "n" },
             },
             use_default_keymaps = false,
         })
