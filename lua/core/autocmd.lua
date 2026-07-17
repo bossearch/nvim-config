@@ -5,7 +5,7 @@ end
 
 autocmd("TextYankPost", {
     group = augroup("highlight_on_yank"),
-    pattern = { "*" },
+    pattern = "*",
     callback = function()
         vim.hl.on_yank()
     end,
@@ -13,7 +13,7 @@ autocmd("TextYankPost", {
 
 autocmd("BufWritePre", {
     group = augroup("remove_trailing_whitespace_on_save"),
-    pattern = { "*" },
+    pattern = "*",
     callback = function()
         local save_cursor = vim.fn.getpos(".")
         pcall(function()
