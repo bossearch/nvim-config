@@ -44,12 +44,15 @@ util.get_window = function()
 end
 
 -- usercmd --
-util.copy_to_clipboard = function(content)
+util.copy_to_clipboard = function(content, plain)
     vim.fn.setreg("+", content)
-    vim.notify('Copied "' .. content .. '" to the clipboard!', vim.log.levels.INFO)
+    if plain then
+        vim.notify("Copied to the clipboard!", vim.log.levels.INFO)
+    else
+        vim.notify('Copied "' .. content .. '" to the clipboard!', vim.log.levels.INFO)
+    end
 end
 
--- usercmd --
 util.get_root_dir = function()
     local bufname = vim.fn.expand("%:p")
     if vim.fn.filereadable(bufname) == 0 then
