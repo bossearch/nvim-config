@@ -57,6 +57,11 @@
     }
 ,
     {
+      "language": "python",
+      "path": "./python.json"
+    }
+,
+    {
       "language": ["sh", "zsh", "shell", "shellscript"],
       "path": "./shell.json"
     }
