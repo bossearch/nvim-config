@@ -3,8 +3,8 @@ return {
     spec = { src = "https://github.com/nvim-lualine/lualine.nvim" },
     event = { "BufReadPre", "BufNewFile" },
     after = function()
-        local lualine = package.loaded["plugins.custom.colorscheme.integrations.lualine"]
-        local mytheme = lualine.mytheme
+        local mytheme = package.loaded["plugins.custom.colorscheme.integrations.lualine"].mytheme
+        local component = require("plugins.extra.lualine-component")
 
         require("lualine").setup({
             options = {
@@ -68,31 +68,13 @@ return {
                     "fileformat",
                 },
                 lualine_b = {
-                    {
-                        require("lib.util").get_cwd,
-                        padding = { left = 1, right = 0 },
-                    },
-                    {
-                        function()
-                            return require("lib.util").separator("/", "/ ")
-                        end,
-                        padding = { left = 0, right = 0 },
-                    },
+                    component.get_cwd,
                 },
                 lualine_c = {
+                    component.filename,
                     {
                         function()
-                            return require("lib.util").separator("", " ")
-                        end,
-                        padding = { left = 0, right = 0 },
-                    },
-                    {
-                        require("lib.util").filename,
-                        padding = { left = 0, right = 1 },
-                    },
-                    {
-                        function()
-                            return require("lib.util").separator("-")
+                            return component.separator("-")
                         end,
                         padding = { left = 0, right = 1 },
                     },
@@ -129,7 +111,7 @@ return {
                         separator = "│",
                     },
                     {
-                        require("lib.util").macro,
+                        component.macro,
                         separator = "│",
                         color = mytheme.custom.b,
                     },
