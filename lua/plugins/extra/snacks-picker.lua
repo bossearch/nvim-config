@@ -126,4 +126,12 @@ return {
             cmd = { "delta" },
         },
     },
+    db = {
+        sqlite3_path = vim.env.SQLITE_PATH,
+    },
+    matcher = {
+        cwd_bonus = false,
+        frecency = true,
+        history_bonus = true,
+    },
 }
