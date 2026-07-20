@@ -37,6 +37,7 @@ lua.lint = {
             args = {
                 "--globals",
                 "vim",
+                "hl",
                 "--formatter",
                 "plain",
                 "--codes",
