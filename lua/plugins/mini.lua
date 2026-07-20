@@ -12,15 +12,7 @@ return {
             directory = vim.fn.stdpath("state") .. "/session",
             file = "",
             force = { delete = true, read = true, write = true },
-            hooks = {
-                post = {
-                    read = function(data)
-                        vim.schedule(function()
-                            vim.notify(data.name .. " restored")
-                        end)
-                    end,
-                },
-            },
+            verbose = { read = true, write = true, delete = true },
         })
         vim.keymap.set({ "n", "v", "i" }, "<C-s>", function()
             require("mini.sessions").write("global-session")
@@ -71,9 +63,10 @@ return {
             })
             require("mini.splitjoin").setup({ mappings = { toggle = "Sj" } })
             require("mini.surround").setup()
+            require("mini.align").setup()
 
             vim.keymap.set("n", "<leader>gh", ":!git restore --staged %<CR>")
-            vim.keymap.set("n", "<leader>gd", ":lua MiniDiff.toggle_overlay(0)<CR>")
+            vim.keymap.set("n", "<leader>go", ":lua MiniDiff.toggle_overlay(0)<CR>")
         end
 
         local current_file = vim.api.nvim_buf_get_name(0)
