@@ -5,7 +5,7 @@ return {
             src = "https://github.com/saghen/blink.cmp",
             version = "v1",
         },
-        event = "InsertEnter",
+        event = { "InsertEnter", "CmdlineEnter" },
         before = function()
             require("lz.n").trigger_load("blink-ripgrep.nvim")
         end,
@@ -18,11 +18,12 @@ return {
             })
 
             local score = {
-                buffer = 50,
+                buffer = 10,
                 lsp = 80,
                 path = 70,
                 ripgrep = 50,
                 snippets = 90,
+                cmdline = 20,
             }
 
             require("blink.cmp").setup({
@@ -58,14 +59,16 @@ return {
                     },
                     nerd_font_variant = "normal",
                 },
-                cmdline = { keymap = { preset = "inherit" } },
+                cmdline = {
+                    keymap = { preset = "inherit" },
+                    completion = { menu = { auto_show = true } },
+                },
                 completion = {
                     accept = { auto_brackets = { enabled = false } },
                     documentation = { auto_show = true },
                     menu = {
                         draw = {
                             columns = { { "label", "label_description", gap = 1 }, { "kind", gap = 1, "kind_icon" } },
-                            padding = { 1, 0 },
                         },
                     },
                 },
@@ -89,7 +92,7 @@ return {
                         buffer = {
                             enabled = true,
                             async = true,
-                            min_keyword_length = 2,
+                            min_keyword_length = 1,
                             module = "blink.cmp.sources.buffer",
                             opts = {
                                 get_bufnrs = function()
@@ -99,6 +102,10 @@ return {
                                 end,
                             },
                             score_offset = score.buffer,
+                        },
+                        cmdline = {
+                            module = "blink.cmp.sources.cmdline",
+                            score_offset = score.cmdline,
                         },
                         lsp = {
                             enabled = true,
