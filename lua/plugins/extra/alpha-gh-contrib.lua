@@ -18,38 +18,37 @@ local icons = {
     circle_full = "",
 }
 
-local function read_colors(path)
+local path = os.getenv("HOME") .. "/.cache/" .. os.getenv("USER") .. "/gh-contrib"
+
+local function get_gh_contrib()
     local days = {}
+
+    if vim.fn.filereadable(path) == 0 then
+        return { type = "group", val = {} }
+    end
+
     for line in io.lines(path) do
         line = vim.trim(line)
         if line ~= "" then
             days[#days + 1] = line
         end
     end
-    return days
-end
 
-local function get_gh_contrib(path)
-    path = path or (os.getenv("HOME") .. "/.cache/bosse/gh-contrib")
-
-    local days = read_colors(path)
     local total_days = #days
     if total_days == 0 then
-        return { type = "group", val = {}, opts = { shrink_margin = false } }
+        return { type = "group", val = {} }
     end
 
     local n_weeks = math.ceil(total_days / 7)
     local now = os.time()
     local today = os.date("*t", now)
     local sunday_offset = today.wday - 1
-
     local base_time = now - (sunday_offset + (n_weeks - 1) * 7) * 86400
 
-    -- Only show the last 6 months to keep the dashboard clean
-    local allowed = {}
+    local n_months = {}
     for i = 0, 5 do
         local t = { year = today.year, month = today.month - i, day = 1 }
-        allowed[os.date("%b", os.time(t))] = true
+        n_months[os.date("%b", os.time(t))] = true
     end
 
     local month_line = string.rep(" ", n_weeks * 2)
@@ -79,7 +78,7 @@ local function get_gh_contrib(path)
         end
 
         -- Drop the month label right above the column where the transition happens
-        if week_month and week_month ~= last_month and allowed[week_month] then
+        if week_month and week_month ~= last_month and n_months[week_month] then
             local col = w * 2 + 1
             month_line = month_line:sub(1, col - 1) .. week_month .. month_line:sub(col + 3)
             last_month = week_month
@@ -162,7 +161,6 @@ local function get_gh_contrib(path)
     local section_contrib = {
         type = "group",
         val = {},
-        opts = { shrink_margin = false },
     }
 
     for i, text_line in ipairs(lines) do
