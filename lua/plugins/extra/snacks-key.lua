@@ -1,6 +1,6 @@
 local Mappings = {
     files = "<leader><leader>f",
-    nvim_config = "<leader><leader>n",
+    nvim_config = "<leader><leader>c",
     icons = "<leader><leader>.",
     keymaps = "<leader><leader>k",
     recent = "<leader><leader>r",
@@ -54,10 +54,10 @@ local keymap = function()
             vim.keymap.set("n", key, function()
                 local opts = {}
                 if method == "files" then
-                    opts = { hidden = true, follow = true, ignored = true }
+                    opts = { hidden = true, follow = true, ignored = true, matcher = { sort_empty = true } }
                 elseif method == "icons" then
                     opts = {
-                        layout = { preset = "select", layout = { relative = "cursor" } },
+                        layout = { preset = "select" },
                         custom_sources = {
                             my_custom_icons = vim.fn.stdpath("config") .. "/lua/lib/icons.json",
                         },

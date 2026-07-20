@@ -75,6 +75,7 @@ return {
         vscode = custom_ivy,
         select = {
             layout = {
+                relative = "cursor",
                 backdrop = false,
                 max_width = 67,
                 border = "none",
@@ -110,6 +111,7 @@ return {
                 statuscolumn = "",
                 signcolumn = "yes:1",
                 cursorlineopt = "both",
+                colorcolumn = "80,120",
             },
         },
     },
