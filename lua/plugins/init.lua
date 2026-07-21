@@ -58,3 +58,37 @@ autocmd({ "BufNewFile", "BufReadPre", "UIEnter" }, {
         end
     end,
 })
+
+-- lazy load customs on demand
+autocmd({ "BufRead", "BufNewFile" }, {
+    group = augroup("markdown_custom"),
+    pattern = { "*.md.age", "*.md" },
+    callback = function()
+        vim.keymap.set("n", "<leader>md", function()
+            require("plugins.custom.md-age").run_decryption(0, vim.api.nvim_buf_get_name(0))
+        end, { buffer = true, desc = "Decrypt markdown file" })
+        vim.keymap.set("n", "<leader>me", function()
+            require("plugins.custom.md-age").run_encryption(0, vim.api.nvim_buf_get_name(0))
+        end, { buffer = true, desc = "Encrypt markdown file" })
+        vim.keymap.set("n", "<leader>mp", function()
+            require("plugins.custom.md-preview")
+        end, { buffer = true, desc = "Preview markdown file" })
+    end,
+})
+
+autocmd("BufReadPost", {
+    group = augroup("auto_decrypt_age_file"),
+    pattern = "*.md.age",
+    callback = function(ev)
+        vim.schedule(function()
+            local first_line = vim.api.nvim_buf_get_lines(ev.buf, 0, 1, false)[1] or ""
+            if first_line:match("^age%-encryption") then
+                if not vim.b[ev.buf].is_encrypted then
+                    if vim.fn.confirm("Do you want to decrypt this file?", "&Yes\n&No") == 1 then
+                        require("plugins.custom.md-age").run_decryption(0, vim.api.nvim_buf_get_name(0))
+                    end
+                end
+            end
+        end)
+    end,
+})
