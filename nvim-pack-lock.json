@@ -90,6 +90,10 @@
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
+    },
+    "zk-nvim": {
+      "rev": "bca7e4a119353f18f2a819385fb7ce10269ef747",
+      "src": "https://github.com/zk-org/zk-nvim"
     }
   }
 }
