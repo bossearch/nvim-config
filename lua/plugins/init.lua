@@ -51,6 +51,7 @@ autocmd({ "BufNewFile", "BufReadPre", "UIEnter" }, {
         elseif args.event == "BufNewFile" or args.event == "BufReadPre" then
             require("plugins.custom.<C-w>q")
             require("plugins.custom.mark")
+            require("plugins.custom.no-format")
             require("plugins.custom.scope")
             require("plugins.custom.todo")
         end
