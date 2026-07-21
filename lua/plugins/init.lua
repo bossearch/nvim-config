@@ -53,6 +53,7 @@ autocmd({ "BufNewFile", "BufReadPre", "UIEnter" }, {
             require("plugins.custom.mark")
             require("plugins.custom.no-format")
             require("plugins.custom.scope")
+            require("plugins.custom.switch")
             require("plugins.custom.todo")
         end
     end,
