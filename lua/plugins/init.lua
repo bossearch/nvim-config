@@ -49,6 +49,7 @@ autocmd({ "BufNewFile", "BufReadPre", "UIEnter" }, {
             require("plugins.custom.pack")
             require("plugins.custom.tmux")
         elseif args.event == "BufNewFile" or args.event == "BufReadPre" then
+            require("plugins.custom.scope")
             require("plugins.custom.todo")
         end
     end,
