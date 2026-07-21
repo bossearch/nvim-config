@@ -6,24 +6,13 @@ return {
         local alpha = require("alpha")
         local dashboard = require("alpha.themes.dashboard")
 
-        local height = vim.o.lines
+        -- paddings
         local head_button_pad = 2
-        local button_button_pad = 1
         local button_footer_pad = 1
         local footer_footer_pad = 1
         local builtin_button_pad = 1
-        if height <= 53 then
-            head_button_pad = 1
-            button_button_pad = 1
-            builtin_button_pad = 0
-            footer_footer_pad = 0
-        end
 
         local gh_contrib = require("plugins.extra.alpha-gh-contrib")
-
-        local recent_files = require("plugins.extra.alpha-recent-files")
-
-        local projects = require("plugins.extra.alpha-recent-project")
 
         dashboard.section.buttons.opts.spacing = builtin_button_pad
         dashboard.section.buttons.val = {
@@ -108,10 +97,6 @@ return {
         -- layout
         local alpha_height = #gh_contrib.val
             + head_button_pad
-            + #recent_files.val()
-            + button_button_pad
-            + #projects.val()
-            + button_button_pad
             + #dashboard.section.buttons.val
             + button_footer_pad
             + #dashboard.section.footer_1.val
@@ -119,17 +104,13 @@ return {
             + #dashboard.section.footer_2.val
             + footer_footer_pad
             + #dashboard.section.footer_3.val
-            - 7 -- yeah some janky stuff for centering my dashboard
+            - 7 -- yeah some janky stuff here for centering my dashboard
         local top_pad = math.max(0, math.ceil((vim.o.lines - alpha_height) / 2))
 
         dashboard.config.layout = {
             { type = "padding", val = top_pad },
             gh_contrib,
             { type = "padding", val = head_button_pad },
-            recent_files,
-            { type = "padding", val = button_button_pad },
-            projects,
-            { type = "padding", val = button_button_pad },
             dashboard.section.buttons,
             { type = "padding", val = button_footer_pad },
             dashboard.section.footer_1,
@@ -150,12 +131,6 @@ return {
                 vim.opt_local.relativenumber = false
                 vim.opt_local.statuscolumn = ""
                 vim.opt_local.fillchars = { eob = " " }
-                vim.opt_local.laststatus = 0
-                local hl = vim.api.nvim_get_hl(0, { name = "Cursor", link = false })
-                hl.blend = 100
-                ---@diagnostic disable-next-line: param-type-mismatch
-                vim.api.nvim_set_hl(0, "Cursor", hl)
-                vim.opt.guicursor:append("a:Cursor/lCursor")
             end,
         })
 
@@ -163,11 +138,6 @@ return {
             pattern = "*",
             callback = function(args)
                 if vim.bo[args.buf].filetype == "alpha" then
-                    local hl = vim.api.nvim_get_hl(0, { name = "Cursor", link = false })
-                    hl.blend = 0
-                    ---@diagnostic disable-next-line: param-type-mismatch
-                    vim.api.nvim_set_hl(0, "Cursor", hl)
-                    vim.opt.guicursor:remove("a:Cursor/lCursor")
                     vim.cmd("bd 1")
                 end
             end,
