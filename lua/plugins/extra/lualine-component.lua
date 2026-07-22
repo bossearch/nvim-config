@@ -46,4 +46,59 @@ M.macro = function()
     return "recording @" .. reg
 end
 
+-- lsp progress --
+local spinner_symbols = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+local client_progress = {}
+local opts = {
+    show_default_progress = true,
+}
+local orig_progress_handler = vim.lsp.handlers["$/progress"]
+
+vim.lsp.handlers["$/progress"] = function(err, msg, ctx)
+    local client_id = ctx.client_id
+    local token = msg.token
+    local value = msg.value
+
+    if not client_progress[client_id] then
+        client_progress[client_id] = {}
+    end
+
+    if value.kind == "begin" then
+        client_progress[client_id][token] = true
+    elseif value.kind == "end" then
+        client_progress[client_id][token] = nil
+    end
+
+    if next(client_progress[client_id]) == nil then
+        client_progress[client_id] = nil
+    end
+
+    if opts.show_default_progress and orig_progress_handler then
+        orig_progress_handler(err, msg, ctx)
+    end
+end
+
+M.lsp_status = function()
+    local clients = vim.lsp.get_clients({ bufnr = vim.api.nvim_get_current_buf() })
+    if #clients == 0 then
+        return "No LSP 󰒏"
+    end
+
+    local hrtime = (vim.uv or vim.loop).hrtime
+    local frame = spinner_symbols[(math.floor(hrtime() / (1e6 * 100)) % #spinner_symbols) + 1]
+
+    local client_names = {}
+    local is_loading = false
+
+    for _, client in ipairs(clients) do
+        table.insert(client_names, client.name)
+        if client_progress[client.id] ~= nil then
+            is_loading = true
+        end
+    end
+
+    local icon = is_loading and frame or "󰒋"
+    return table.concat(client_names, ":") .. " " .. icon
+end
+
 return M

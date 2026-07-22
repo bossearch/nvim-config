@@ -9,54 +9,10 @@ return {
         require("lualine").setup({
             options = {
                 component_separators = { left = "", right = "" },
-                disabled_filetypes = { statusline = { "alpha" } },
                 globalstatus = true,
                 section_separators = { left = "", right = "" },
                 theme = mytheme,
                 always_show_tabline = true,
-            },
-            tabline = {
-                lualine_c = {
-                    {
-                        "buffers",
-                        show_filename_only = true,
-                        hide_filename_extension = false,
-                        show_modified_status = true,
-                        mode = 0,
-                        max_length = function()
-                            local tab_count = vim.fn.tabpagenr("$")
-                            local tab_offset = tab_count > 1 and (tab_count * 3) or 0
-                            return math.max(vim.o.columns - tab_offset)
-                        end,
-                        filetype_names = {
-                            oil = "Oil",
-                            qf = " Quickfix",
-                            snacks_picker_input = "󰢷 Picker",
-                            NeogitStatus = " Neogit Status",
-                            NeogitPopup = " Neogit Popup",
-                        },
-
-                        symbols = {
-                            modified = " ●",
-                            alternate_file = "",
-                            directory = "",
-                        },
-                        use_mode_colors = false,
-                        buffers_color = {
-                            active = mytheme.custom.a,
-                        },
-                    },
-                },
-                lualine_y = {
-                    {
-                        "tabs",
-                        cond = function()
-                            return vim.fn.tabpagenr("$") > 1
-                        end,
-                        show_modified_status = false,
-                        use_mode_colors = true,
-                    },
-                },
             },
             sections = {
                 lualine_a = {
@@ -68,6 +24,14 @@ return {
                     "fileformat",
                 },
                 lualine_b = {
+                    {
+                        "tabs",
+                        cond = function()
+                            return vim.fn.tabpagenr("$") > 1
+                        end,
+                        show_modified_status = false,
+                        use_mode_colors = true,
+                    },
                     component.get_cwd,
                 },
                 lualine_c = {
@@ -153,18 +117,7 @@ return {
                         end,
                         separator = "│",
                     },
-                    require("lib.util").no_lsp,
-                    {
-                        "lsp_status",
-                        icon = false,
-                        symbols = {
-                            spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-                            done = "󰒋",
-                            separator = "|",
-                        },
-                        ignore_lsp = { "render-markdown" },
-                        show_name = true,
-                    },
+                    component.lsp_status,
                 },
             },
         })
