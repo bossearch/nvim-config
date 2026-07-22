@@ -60,7 +60,7 @@ return {
         hi('SpellCap',       {fg=nil,      bg=nil,      attr='undercurl',    sp=p.base0D})
         hi('SpellLocal',     {fg=nil,      bg=nil,      attr='undercurl',    sp=p.base0C})
         hi('SpellRare',      {fg=nil,      bg=nil,      attr='undercurl',    sp=p.base0E})
-        hi('StatusLine',     {fg=p.base01, bg=p.base01, attr=nil,            sp=nil})
+        hi('StatusLine',     {fg=p.base05, bg=p.base00, attr=nil,            sp=nil})
         hi('StatusLineNC',   {fg=p.base03, bg=p.base01, attr=nil,            sp=nil})
         hi('StderrMsg',      {link='ErrorMsg'})
         hi('StdoutMsg',      {link='MsgArea'})

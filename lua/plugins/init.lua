@@ -1,5 +1,5 @@
 require("plugins.custom.color") -- autoload colorscheme
-require("plugins.extra.alpha-get-startup-time")
+-- require("plugins.extra.alpha-get-startup-time")
 
 -- lazy load normal plugins with lz.n
 vim.pack.add({ "https://github.com/lumen-oss/lz.n" }, { confirm = false })
@@ -46,6 +46,7 @@ autocmd({ "BufNewFile", "BufReadPre", "UIEnter" }, {
     group = augroup("lazy_load_custom_plugins"),
     callback = function(args)
         if args.event == "UIEnter" then
+            require("plugins.custom.dashboard")
             require("plugins.custom.pack")
             require("plugins.custom.tmux")
         elseif args.event == "BufNewFile" or args.event == "BufReadPre" then
