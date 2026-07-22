@@ -1,3 +1,19 @@
+-- remove neovim default lsp keymaps
+local default_lsp_keys = {
+    { { "n" }, "grn" },
+    { { "n", "x" }, "gra" },
+    { { "n" }, "grx" },
+    { { "n" }, "grr" },
+    { { "n" }, "gri" },
+    { { "n" }, "grt" },
+    { { "n" }, "gO" },
+    { { "i", "s" }, "<C-S>" },
+}
+
+for _, map in ipairs(default_lsp_keys) do
+    pcall(vim.keymap.del, map[1], map[2])
+end
+
 vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("lazy_load_lsp", { clear = true }),
     callback = function(args)
