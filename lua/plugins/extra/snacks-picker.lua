@@ -1,27 +1,10 @@
 local snacks = package.loaded["plugins.custom.colorscheme.integrations.snacks"]
-local snacks_backdrop = snacks.backdrop
 local custom_hl = snacks.custom_hl
 
-local function dynamic_layout_config(layout)
-    if vim.bo.filetype == "alpha" then
-        layout.opts.backdrop = { bg = snacks_backdrop, blend = 0 }
-    else
-        layout.opts.backdrop = false
-    end
-end
-
-local height_full = function(layout)
-    dynamic_layout_config(layout)
-    return vim.o.lines - 2
-end
-
-local row_ivy = function(layout)
-    dynamic_layout_config(layout)
-    return -1
-end
 local custom_ivy = {
     layout = {
-        row = row_ivy,
+        backdrop = false,
+        row = -1,
         border = "none",
         box = "vertical",
         {
@@ -48,7 +31,8 @@ return {
     layouts = {
         full = {
             layout = {
-                height = height_full,
+                backdrop = false,
+                height = (vim.o.lines - 1),
                 border = "none",
                 box = "vertical",
                 {

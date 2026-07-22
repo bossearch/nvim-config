@@ -22,8 +22,6 @@ M.setup = function(p, hi)
     hi('SnacksPickerTree',              {fg = p.base03, bg = p.base01, attr = nil,         sp = nil})
     hi('SnacksPickerInputSearch',       {link = 'SnacksPickerPrompt'})
 
-    M.backdrop = p.base00
-
     local winhighlight_list = {}
 
         local overrides = {
