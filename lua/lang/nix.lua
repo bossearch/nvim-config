@@ -1,16 +1,21 @@
 local nix = {}
 
+local generated = dofile(vim.fn.stdpath("cache") .. "/generated.lua")
+local nixos = generated.nixd.nixos
+local home_manager = generated.nixd.home_manager
+
 nix.lsp = {
     nixd = {
         settings = {
             nixd = {
                 nixpkgs = { expr = "import <nixpkgs> {}" },
                 options = {
-                    home_manager = {
-                        expr = '(builtins.getFlake "github:bossearch/nix-config").homeConfigurations."bosse@silvia".options',
-                    },
                     nixos = {
-                        expr = '(builtins.getFlake "github:bossearch/nix-config").nixosConfigurations.silvia.options',
+                        expr = nixos,
+                    },
+
+                    home_manager = {
+                        expr = home_manager,
                     },
                 },
             },
