@@ -4,7 +4,7 @@ return {
     ft = "markdown",
     after = function()
         require("render-markdown").setup({
-            completions = { lsp = { enabled = true } },
+            completions = { lsp = { enabled = false } },
             file_types = { "markdown" },
             heading = {
                 icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
