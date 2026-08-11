@@ -71,9 +71,6 @@ autocmd({ "BufRead", "BufNewFile" }, {
         vim.keymap.set("n", "<leader>me", function()
             require("plugins.custom.md-age").run_encryption(0, vim.api.nvim_buf_get_name(0))
         end, { buffer = true, desc = "Encrypt markdown file" })
-        vim.keymap.set("n", "<leader>mp", function()
-            require("plugins.custom.md-preview")
-        end, { buffer = true, desc = "Preview markdown file" })
     end,
 })
 

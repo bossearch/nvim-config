@@ -37,6 +37,10 @@
       "rev": "dc811ca59a33753828c2676bd12d56de5ccb18a5",
       "src": "https://github.com/lumen-oss/lz.n"
     },
+    "markdown-preview.nvim": {
+      "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
+      "src": "https://github.com/iamcco/markdown-preview.nvim"
+    },
     "mini.nvim": {
       "rev": "bf8169f3e518be8de3f88073ace37d91f576cb04",
       "src": "https://github.com/echasnovski/mini.nvim"
