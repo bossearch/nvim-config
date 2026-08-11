@@ -19,10 +19,10 @@ return {
 
             local score = {
                 buffer = 10,
-                lsp = 80,
-                path = 70,
+                lsp = 70,
+                path = 90,
                 ripgrep = 50,
-                snippets = 90,
+                snippets = 70,
                 cmdline = 20,
             }
 
