@@ -29,6 +29,10 @@ nix.format = {
     },
 }
 
-nix.lint = {}
+nix.lint = {
+    linters_by_ft = {
+        nix = { "statix", "deadnix" },
+    },
+}
 
 return nix
