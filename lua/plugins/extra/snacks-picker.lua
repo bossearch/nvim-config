@@ -120,4 +120,8 @@ return {
         frecency = true,
         history_bonus = true,
     },
+    icons = {
+        diagnostics = require("lib.icons").diagnostics,
+        kinds = require("lib.icons").kinds,
+    },
 }

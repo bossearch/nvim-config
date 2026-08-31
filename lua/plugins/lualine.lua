@@ -5,6 +5,7 @@ return {
     after = function()
         local mytheme = package.loaded["plugins.custom.colorscheme.integrations.lualine"].mytheme
         local component = require("plugins.extra.lualine-component")
+        local icons = require("lib.icons").diagnostics
 
         require("lualine").setup({
             options = {
@@ -66,10 +67,10 @@ return {
                         "diagnostics",
                         sources = { "nvim_diagnostic" },
                         symbols = {
-                            error = "E",
-                            warn = "W",
-                            info = "I",
-                            hint = "H",
+                            error = icons.Error,
+                            warn = icons.Warn,
+                            info = icons.Info,
+                            hint = icons.Hint,
                         },
                         update_in_insert = false,
                         separator = "│",

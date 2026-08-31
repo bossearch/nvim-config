@@ -3,6 +3,7 @@ return {
     spec = { src = "https://github.com/stevearc/quicker.nvim" },
     ft = "qf",
     after = function()
+        local icons = require("lib.icons").diagnostics
         require("quicker").setup({
             keys = {
                 {
@@ -28,6 +29,13 @@ return {
                 soft_header = "╌",
                 soft_cross = "┼",
                 soft_end = "┤",
+            },
+            type_icons = {
+                E = icons.Error .. " ",
+                W = icons.Warn .. " ",
+                I = icons.Info .. " ",
+                H = icons.Hint .. " ",
+                N = "N ",
             },
         })
     end,
