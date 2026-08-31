@@ -2,7 +2,13 @@ vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
     group = vim.api.nvim_create_augroup("lazy_load_filetype", { clear = true }),
     callback = function(args)
         vim.filetype.add({
-            extension = { vpy = "python" },
+            extension = {
+                vpy = "python",
+                vert = "glsl",
+                frag = "glsl",
+                vsh = "glsl",
+                fsh = "glsl",
+            },
             pattern = {
                 [".*/hypr/.*%.conf"] = "hyprlang",
             },
