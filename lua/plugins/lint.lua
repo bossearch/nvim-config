@@ -1,7 +1,8 @@
 return {
     "nvim-lint",
     spec = { src = "https://github.com/mfussenegger/nvim-lint" },
-    event = { "BufReadPre", "BufNewFile" },
+    autoload = true,
+    -- event = { "BufReadPre", "BufNewFile" },
     after = function()
         local util = require("lib.util")
         local lint = require("lint")
