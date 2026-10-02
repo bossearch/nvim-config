@@ -3,10 +3,11 @@ local Mappings = {
     note_buffer = "<leader>nb",
     note_cd = ".n",
     note_find = "<leader>nf",
+    note_index = "<leader>ni",
     note_link = "<leader>nl",
     note_new = "<leader>nn",
-    note_new_content_select = "<leader>nc",
-    note_new_title_select = "<leader>nt",
+    note_new_content_select = "<leader>nN",
+    note_new_title_select = "<leader>nn",
     note_tag = "<leader>nt",
 }
 
@@ -19,6 +20,7 @@ return {
     "zk-nvim",
     spec = { src = "https://github.com/zk-org/zk-nvim" },
     keys = lz_keys,
+    ft = "markdown",
     after = function()
         require("zk").setup({
             lsp = {
@@ -53,11 +55,19 @@ return {
             ":'<,'>ZkNewFromContentSelection { title = vim.fn.input('Title: ') }<CR>",
             opts
         )
-        map("n", Mappings.note_backlink, "<Cmd>ZkBacklinks<CR>", opts)
-        map("n", Mappings.note_link, "<Cmd>ZkLinks<CR>", opts)
-        map("n", Mappings.note_find, "<Cmd>ZkNotes<CR>", opts)
-        map("n", Mappings.note_tag, "<Cmd>ZkTags<CR>", opts)
-        map("n", Mappings.note_cd, "<Cmd>ZkCd<CR>", opts)
-        map("n", Mappings.note_buffer, "<Cmd>ZkBuffers<CR>", opts)
+        map("n", Mappings.note_backlink, "<cmd>ZkBacklinks<CR>", opts)
+        map("n", Mappings.note_buffer, "<cmd>ZkBuffers<CR>", opts)
+        map("n", Mappings.note_cd, "<cmd>ZkCd<CR>", opts)
+        map("n", Mappings.note_find, "<cmd>ZkNotes<CR>", opts)
+        map("n", Mappings.note_index, "<cmd>ZkIndex<CR>", opts)
+        map("n", Mappings.note_link, "<cmd>ZkLinks<CR>", opts)
+        map("n", Mappings.note_tag, function()
+            local zk_config = require("zk.config")
+            zk_config.options.picker_options.snacks_picker.layout.preset = "ivy"
+            require("zk.commands").get("ZkTags")()
+            vim.defer_fn(function()
+                zk_config.options.picker_options.snacks_picker.layout.preset = "full"
+            end, 200)
+        end, opts)
     end,
 }
