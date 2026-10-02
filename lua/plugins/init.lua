@@ -1,5 +1,4 @@
 require("plugins.custom.color") -- autoload colorscheme
--- require("plugins.extra.alpha-get-startup-time")
 
 -- lazy load normal plugins with lz.n
 vim.pack.add({ "https://github.com/lumen-oss/lz.n" }, { confirm = false })

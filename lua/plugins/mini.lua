@@ -75,12 +75,9 @@ return {
         else
             vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
                 once = true,
-                callback = function(args)
-                    local ft = vim.bo[args.buf].filetype
-                    if ft ~= "alpha" then
-                        deferred_mini_modules()
-                        return true
-                    end
+                callback = function()
+                    deferred_mini_modules()
+                    return true
                 end,
             })
         end

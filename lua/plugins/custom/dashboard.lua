@@ -14,14 +14,8 @@ hl(0, "GitHub2", { fg = "#30a14e" })
 hl(0, "GitHub3", { fg = "#40c463" })
 hl(0, "GitHub4", { fg = "#9be9a8" })
 
-local icons = {
-    block_empty = "",
-    circle_empty = "",
-    block_full = "",
-    circle_full = "",
-}
-
 local function gh_contrib()
+    local icons = require("lib.icons").gh_contrib
     local file = os.getenv("HOME") .. "/.cache/" .. os.getenv("USER") .. "/gh-contrib"
 
     if vim.fn.filereadable(file) == 0 then
@@ -49,6 +43,10 @@ local function gh_contrib()
     for i = start_idx, total_days do
         local color = days[i]
         local hl_group = colors[color]
+
+        if not hl_group then
+            return " file is error "
+        end
         local is_empty = (color == "#ebedf0")
         local offset = total_days - i
         local wday = (today_wday - offset - 1) % 7 + 1
@@ -173,24 +171,36 @@ local function launch_dashboard()
     set("buflisted", false)
     set("bufhidden", "wipe")
     set("buftype", "nofile")
-    set("colorcolumn", "")
-    set("cursorline", false)
     set("filetype", "dashboard")
     set("modifiable", false)
-    set("number", false)
-    set("relativenumber", false)
-    set("statuscolumn", "")
     set("swapfile", false)
     vim.opt.statusline = "%!v:lua.dashboard_render()"
 
+    local group = vim.api.nvim_create_augroup("dashboard_picker", { clear = true })
+
     -- auto focus snacks picker input
-    local group = vim.api.nvim_create_augroup("dashboard_unfocused", { clear = true })
     vim.api.nvim_create_autocmd("WinEnter", {
         group = group,
         callback = function()
             local active_pickers = require("snacks").picker.get()
             if #active_pickers > 0 and vim.api.nvim_get_current_win() == dashboard_win then
                 active_pickers[1]:focus("input")
+            end
+        end,
+    })
+
+    -- auto close smart picker if another picker is opened
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "snacks_picker_input",
+        group = group,
+        callback = function()
+            local pickers = require("snacks").picker.get()
+            if #pickers > 1 then
+                for _, p in ipairs(pickers) do
+                    if p.opts.source == "smart" and p.input.win.win ~= vim.api.nvim_get_current_win() then
+                        p:close()
+                    end
+                end
             end
         end,
     })
@@ -240,14 +250,12 @@ local function launch_actually(details)
     end
 
     local filename = vim.fn.fnameescape(target_path)
-
     if vim.fn.filereadable(filename) == 1 then
         return
     end
 
     local basename = vim.fs.basename
     local swapfile = basename(vim.fn.swapname(vim.fn.bufname(0)))
-
     local prev_fileignorecase = vim.o.fileignorecase
     vim.o.fileignorecase = true
 
