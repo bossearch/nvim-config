@@ -7,19 +7,31 @@ M.get_cwd = function()
 end
 
 M.filename = function()
-    local status = ""
-    if vim.bo.readonly then
-        status = " [RO]"
-    elseif vim.fn.expand("%:t") == "" then
-        status = ""
-    end
-
     local path = vim.fn.expand("%:.")
     if path == "" then
-        path = "[No Name]"
+        return "[No Name]"
     end
 
-    return path .. status
+    local flags = {}
+
+    if vim.bo.modified then
+        table.insert(flags, "[+]")
+    end
+
+    if vim.bo.readonly or not vim.bo.modifiable then
+        table.insert(flags, "[RO]")
+    end
+
+    local full_path = vim.api.nvim_buf_get_name(0)
+    if full_path ~= "" and vim.bo.buftype == "" and vim.fn.filereadable(full_path) == 0 then
+        table.insert(flags, "[New]")
+    end
+
+    if #flags > 0 then
+        return path .. " " .. table.concat(flags, " ")
+    end
+
+    return path
 end
 
 M.no_lsp = function()
